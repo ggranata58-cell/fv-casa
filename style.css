@@ -1,3 +1,4 @@
+```css
 :root{
   font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   color:#e5e7eb;
@@ -168,6 +169,10 @@ h1{
   letter-spacing:.04em
 }
 
+.monthly-header span:not(:first-child){
+  text-align:right
+}
+
 .monthly-row{
   padding:16px 14px;
   border-top:1px solid #1e293b;
@@ -238,3 +243,4 @@ button:active{
     font-size:32px
   }
 }
+```
