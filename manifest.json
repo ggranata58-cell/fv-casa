@@ -1,1 +1,27 @@
-{"name":"FV Casa","short_name":"FV Casa","description":"Monitoraggio dell'impianto fotovoltaico di casa","start_url":"./","display":"standalone","background_color":"#020617","theme_color":"#0f172a","lang":"it","orientation":"portrait"}
+```json
+{
+  "name": "FV Casa",
+  "short_name": "FV Casa",
+  "description": "Monitoraggio dell'impianto fotovoltaico di casa",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#0f172a",
+  "lang": "it",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
+```
