@@ -1,9 +1,10 @@
 const SUPABASE_FUNCTION_URL="https://bstcydrgyspgofckzybl.supabase.co/functions/v1/fv-casa-data";
-const SUPABASE_PUBLISHABLE_KEY="sb_publishable_LURu7IVWMgryAlEq6upJKQ_wrTMfBJ6";
+const SUPABASE_PUBLISHABLE_KEY="INSERIRE_QUI_LA_CHIAVE_PUBLISHABLE";
 
 const $=id=>document.getElementById(id);
 
 function formatNumber(value,decimals=3){
+
   const n=Number(value);
 
   if(!Number.isFinite(n)){
@@ -17,12 +18,24 @@ function formatNumber(value,decimals=3){
 }
 
 function formatKwh(value){
+
   return Number.isFinite(Number(value))
     ? formatNumber(value,1)+" kWh"
     :"—";
 }
 
+function formatEuro(value){
+
+  return Number.isFinite(Number(value))
+    ? Number(value).toLocaleString("it-IT",{
+        minimumFractionDigits:2,
+        maximumFractionDigits:2
+      })+" €"
+    :"—";
+}
+
 function formatMonth(value){
+
   if(!value){
     return"—";
   }
@@ -40,6 +53,7 @@ function formatMonth(value){
 }
 
 function formatTime(iso){
+
   if(!iso){
     return"—";
   }
@@ -57,12 +71,16 @@ function formatTime(iso){
   });
 }
 
+
 function renderMonthly(data){
 
   const container=$("monthlyData");
 
   if(!Array.isArray(data)||data.length===0){
-    container.innerHTML='<div class="monthly-empty">Nessun dato mensile disponibile</div>';
+
+    container.innerHTML=
+      '<div class="monthly-empty">Nessun dato mensile disponibile</div>';
+
     return;
   }
 
@@ -94,6 +112,98 @@ function renderMonthly(data){
   container.innerHTML=html;
 }
 
+
+function renderNufri(data){
+
+  const container=$("nufriData");
+  const toggle=$("nufriToggle");
+
+  if(!Array.isArray(data)||data.length===0){
+
+    container.innerHTML=
+      '<div class="nufri-empty">Nessun dato Nufri disponibile</div>';
+
+    toggle.hidden=true;
+
+    return;
+  }
+
+  let html="";
+
+  data.forEach((row,index)=>{
+
+    const hidden=index>0;
+
+    html+=`
+      <article class="nufri-card${hidden?" nufri-hidden":""}">
+
+        <div class="nufri-month">
+          ${formatMonth(row.mese)}
+        </div>
+
+        <div class="nufri-row">
+          <span>Consumo</span>
+          <strong>${formatKwh(row.consumo_nufri_kwh)}</strong>
+        </div>
+
+        <div class="nufri-row">
+          <span>Energia fatturata</span>
+          <strong>${formatKwh(row.energia_fatturata_kwh)}</strong>
+        </div>
+
+        <div class="nufri-row">
+          <span>Eccedenze</span>
+          <strong>${formatKwh(row.eccedenze_kwh)}</strong>
+        </div>
+
+        <div class="nufri-row nufri-total">
+          <span>Fattura IVA inclusa</span>
+          <strong>${formatEuro(row.importo_iva_inclusa)}</strong>
+        </div>
+
+      </article>
+    `;
+  });
+
+  container.innerHTML=html;
+
+  if(data.length>1){
+
+    toggle.hidden=false;
+    toggle.textContent="Mostra mesi precedenti";
+    toggle.dataset.expanded="false";
+
+  }else{
+
+    toggle.hidden=true;
+  }
+}
+
+
+function toggleNufri(){
+
+  const cards=document.querySelectorAll(".nufri-hidden");
+  const toggle=$("nufriToggle");
+
+  if(!cards.length){
+    return;
+  }
+
+  const expanded=toggle.dataset.expanded==="true";
+
+  cards.forEach(card=>{
+    card.classList.toggle("nufri-visible",!expanded);
+  });
+
+  toggle.dataset.expanded=String(!expanded);
+
+  toggle.textContent=
+    expanded
+      ?"Mostra mesi precedenti"
+      :"Nascondi mesi precedenti";
+}
+
+
 async function loadData(){
 
   const status=$("status");
@@ -108,6 +218,7 @@ async function loadData(){
       SUPABASE_PUBLISHABLE_KEY &&
       !SUPABASE_PUBLISHABLE_KEY.startsWith("INSERIRE_")
     ){
+
       headers.apikey=SUPABASE_PUBLISHABLE_KEY;
       headers.Authorization="Bearer "+SUPABASE_PUBLISHABLE_KEY;
     }
@@ -128,6 +239,7 @@ async function loadData(){
       !result.ok ||
       !result.dati
     ){
+
       throw new Error(
         result.error ||
         "HTTP "+response.status
@@ -165,6 +277,8 @@ async function loadData(){
 
     renderMonthly(result.mensile);
 
+    renderNufri(result.nufri);
+
     status.textContent="Dati aggiornati";
 
   }catch(error){
@@ -176,17 +290,26 @@ async function loadData(){
   }
 }
 
+
 $("refreshButton").addEventListener(
   "click",
   loadData
 );
 
+$("nufriToggle").addEventListener(
+  "click",
+  toggleNufri
+);
+
+
 loadData();
+
 
 setInterval(
   loadData,
   5*60*1000
 );
+
 
 if("serviceWorker"in navigator){
 
