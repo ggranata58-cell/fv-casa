@@ -61,7 +61,8 @@ h1{
 .hero-card,
 .card,
 .today,
-.monthly{
+.monthly,
+.nufri-card{
   border:1px solid #1e293b;
   background:rgba(15,23,42,.82);
   border-radius:22px;
@@ -199,6 +200,93 @@ h1{
   color:#64748b;
   font-size:13px
 }
+
+
+/* CONFRONTO NUFRI */
+
+.nufri{
+  display:flex;
+  flex-direction:column;
+  gap:12px
+}
+
+.nufri-card{
+  padding:18px;
+}
+
+.nufri-month{
+  margin-bottom:12px;
+  color:#f8fafc;
+  font-size:18px;
+  font-weight:700;
+  text-transform:capitalize
+}
+
+.nufri-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:16px;
+  padding:11px 0;
+  border-bottom:1px solid #1e293b;
+  font-size:14px
+}
+
+.nufri-row span{
+  color:#94a3b8
+}
+
+.nufri-row strong{
+  color:#f8fafc;
+  white-space:nowrap
+}
+
+.nufri-total{
+  border-bottom:0;
+  padding-bottom:0;
+  margin-top:2px
+}
+
+.nufri-total strong{
+  font-size:17px
+}
+
+.nufri-hidden{
+  display:none
+}
+
+.nufri-visible{
+  display:block
+}
+
+.nufri-empty{
+  padding:20px;
+  border:1px solid #1e293b;
+  background:rgba(15,23,42,.82);
+  border-radius:22px;
+  color:#64748b;
+  font-size:13px
+}
+
+.nufri-toggle{
+  display:block;
+  width:100%;
+  margin-top:12px;
+  padding:14px 18px;
+  border:1px solid #334155;
+  border-radius:16px;
+  background:#1e293b;
+  color:#e2e8f0;
+  font:inherit;
+  font-size:14px;
+  font-weight:600;
+  cursor:pointer
+}
+
+.nufri-toggle:active{
+  transform:scale(.98)
+}
+
 
 footer{
   display:flex;
