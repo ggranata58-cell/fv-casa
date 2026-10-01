@@ -62,7 +62,8 @@ h1{
 .card,
 .today,
 .monthly,
-.nufri-card{
+.nufri-card,
+.savings-card{
   border:1px solid #1e293b;
   background:rgba(15,23,42,.82);
   border-radius:22px;
@@ -211,7 +212,7 @@ h1{
 }
 
 .nufri-card{
-  padding:18px;
+  padding:18px
 }
 
 .nufri-month{
@@ -283,8 +284,101 @@ h1{
   cursor:pointer
 }
 
-.nufri-toggle:active{
-  transform:scale(.98)
+
+/* RISPARMIO ECONOMICO */
+
+.savings{
+  display:flex;
+  flex-direction:column;
+  gap:12px
+}
+
+.savings-card{
+  padding:18px
+}
+
+.savings-month{
+  margin-bottom:12px;
+  color:#f8fafc;
+  font-size:18px;
+  font-weight:700;
+  text-transform:capitalize
+}
+
+.savings-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:16px;
+  padding:11px 0;
+  border-bottom:1px solid #1e293b;
+  font-size:14px
+}
+
+.savings-row span{
+  color:#94a3b8
+}
+
+.savings-row strong{
+  color:#f8fafc;
+  white-space:nowrap
+}
+
+.savings-net{
+  margin-top:2px
+}
+
+.savings-net strong{
+  font-size:17px
+}
+
+.savings-cumulative{
+  border-bottom:0;
+  padding-bottom:0
+}
+
+.savings-cumulative strong{
+  font-size:17px
+}
+
+.positive{
+  color:#86efac !important
+}
+
+.negative{
+  color:#fca5a5 !important
+}
+
+.savings-hidden{
+  display:none
+}
+
+.savings-visible{
+  display:block
+}
+
+.savings-empty{
+  padding:20px;
+  border:1px solid #1e293b;
+  background:rgba(15,23,42,.82);
+  border-radius:22px;
+  color:#64748b;
+  font-size:13px
+}
+
+.savings-toggle{
+  display:block;
+  width:100%;
+  margin-top:12px;
+  padding:14px 18px;
+  border:1px solid #334155;
+  border-radius:16px;
+  background:#1e293b;
+  color:#e2e8f0;
+  font:inherit;
+  font-size:14px;
+  font-weight:600;
+  cursor:pointer
 }
 
 
@@ -306,6 +400,7 @@ button:active{
   transform:scale(.96)
 }
 
+
 @media(max-width:620px){
 
   .monthly{
@@ -317,6 +412,7 @@ button:active{
     min-width:610px
   }
 }
+
 
 @media(max-width:520px){
 
