@@ -3,6 +3,7 @@ const SUPABASE_PUBLISHABLE_KEY="sb_publishable_LURu7IVWMgryAlEq6upJKQ_wrTMfBJ6";
 
 const $=id=>document.getElementById(id);
 
+
 function formatNumber(value,decimals=3){
 
   const n=Number(value);
@@ -17,12 +18,14 @@ function formatNumber(value,decimals=3){
   });
 }
 
+
 function formatKwh(value){
 
   return Number.isFinite(Number(value))
     ? formatNumber(value,1)+" kWh"
     :"—";
 }
+
 
 function formatEuro(value){
 
@@ -33,6 +36,7 @@ function formatEuro(value){
       })+" €"
     :"—";
 }
+
 
 function formatMonth(value){
 
@@ -51,6 +55,7 @@ function formatMonth(value){
     year:"numeric"
   });
 }
+
 
 function formatTime(iso){
 
@@ -204,6 +209,121 @@ function toggleNufri(){
 }
 
 
+function renderSavings(data){
+
+  const container=$("savingsData");
+  const toggle=$("savingsToggle");
+
+  if(!Array.isArray(data)||data.length===0){
+
+    container.innerHTML=
+      '<div class="savings-empty">Nessun dato economico disponibile</div>';
+
+    toggle.hidden=true;
+
+    return;
+  }
+
+  let html="";
+
+  data.forEach((row,index)=>{
+
+    const hidden=index>0;
+
+    html+=`
+      <article class="savings-card${hidden?" savings-hidden":""}">
+
+        <div class="savings-month">
+          ${formatMonth(row.mese)}
+        </div>
+
+        <div class="savings-row">
+          <span>Costo senza FV</span>
+          <strong>${formatEuro(row.costo_senza_fv)}</strong>
+        </div>
+
+        <div class="savings-row">
+          <span>Costo con FV</span>
+          <strong>${formatEuro(row.costo_con_fv)}</strong>
+        </div>
+
+        <div class="savings-row">
+          <span>Risparmio FV</span>
+          <strong>${formatEuro(row.risparmio_fv)}</strong>
+        </div>
+
+        <div class="savings-row">
+          <span>Rata finanziamento</span>
+          <strong>${formatEuro(row.rata_finanziamento)}</strong>
+        </div>
+
+        <div class="savings-row savings-net">
+
+          <span>
+            Risparmio netto
+          </span>
+
+          <strong class="${Number(row.risparmio_netto)>=0?"positive":"negative"}">
+            ${formatEuro(row.risparmio_netto)}
+          </strong>
+
+        </div>
+
+        <div class="savings-row savings-cumulative">
+
+          <span>
+            Risparmio netto cumulato
+          </span>
+
+          <strong class="${Number(row.risparmio_netto_cumulato)>=0?"positive":"negative"}">
+            ${formatEuro(row.risparmio_netto_cumulato)}
+          </strong>
+
+        </div>
+
+      </article>
+    `;
+  });
+
+  container.innerHTML=html;
+
+  if(data.length>1){
+
+    toggle.hidden=false;
+    toggle.textContent="Mostra mesi precedenti";
+    toggle.dataset.expanded="false";
+
+  }else{
+
+    toggle.hidden=true;
+  }
+}
+
+
+function toggleSavings(){
+
+  const cards=document.querySelectorAll(".savings-hidden");
+  const toggle=$("savingsToggle");
+
+  if(!cards.length){
+    return;
+  }
+
+  const expanded=toggle.dataset.expanded==="true";
+
+  cards.forEach(card=>{
+    card.classList.toggle("savings-visible",!expanded);
+  });
+
+  toggle.dataset.expanded=String(!expanded);
+
+  toggle.textContent=
+    expanded
+      ?"Mostra mesi precedenti"
+      :"Nascondi mesi precedenti";
+}
+
+
 async function loadData(){
 
   const status=$("status");
@@ -248,36 +368,49 @@ async function loadData(){
 
     const d=result.dati;
 
+
     $("produzioneKw").textContent=
       formatNumber(d.produzione_fv_kw);
+
 
     $("consumoKw").textContent=
       formatNumber(d.consumo_casa_kw);
 
+
     $("immissioneKw").textContent=
       formatNumber(d.immissione_rete_kw);
+
 
     $("prelievoKw").textContent=
       formatNumber(d.prelievo_rete_kw);
 
+
     $("produzioneKwh").textContent=
       formatKwh(d.produzione_fv_kwh);
+
 
     $("consumoKwh").textContent=
       formatKwh(d.consumo_casa_kwh);
 
+
     $("immessoKwh").textContent=
       formatKwh(d.immesso_rete_kwh);
+
 
     $("prelevatoKwh").textContent=
       formatKwh(d.prelevato_rete_kwh);
 
+
     $("lastUpdate").textContent=
       formatTime(d.rilevazione_at);
+
 
     renderMonthly(result.mensile);
 
     renderNufri(result.nufri);
+
+    renderSavings(result.risparmio);
+
 
     status.textContent="Dati aggiornati";
 
@@ -296,9 +429,16 @@ $("refreshButton").addEventListener(
   loadData
 );
 
+
 $("nufriToggle").addEventListener(
   "click",
   toggleNufri
+);
+
+
+$("savingsToggle").addEventListener(
+  "click",
+  toggleSavings
 );
 
 
