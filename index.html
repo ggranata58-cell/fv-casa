@@ -19,23 +19,36 @@
     <div class="eyebrow">MONITORAGGIO FOTOVOLTAICO</div>
     <h1>FV Casa</h1>
   </div>
-  <button id="refreshButton" class="refresh" type="button" aria-label="Aggiorna dati">↻</button>
+
+  <button
+    id="refreshButton"
+    class="refresh"
+    type="button"
+    aria-label="Aggiorna dati"
+  >↻</button>
 </header>
 
-<section id="status" class="status">Connessione in corso…</section>
+<section id="status" class="status">
+  Connessione in corso…
+</section>
 
 <section class="hero-card">
   <div class="hero-label">Produzione FV</div>
+
   <div class="hero-value">
     <span id="produzioneKw">—</span><small> kW</small>
   </div>
-  <div class="hero-sub">potenza istantanea</div>
+
+  <div class="hero-sub">
+    potenza istantanea
+  </div>
 </section>
 
 <section class="grid">
 
   <article class="card">
     <div class="card-label">Consumo casa</div>
+
     <div class="card-value">
       <span id="consumoKw">—</span><small> kW</small>
     </div>
@@ -43,6 +56,7 @@
 
   <article class="card">
     <div class="card-label">Immissione rete</div>
+
     <div class="card-value">
       <span id="immissioneKw">—</span><small> kW</small>
     </div>
@@ -50,6 +64,7 @@
 
   <article class="card">
     <div class="card-label">Prelievo rete</div>
+
     <div class="card-value">
       <span id="prelievoKw">—</span><small> kW</small>
     </div>
@@ -57,7 +72,9 @@
 
 </section>
 
-<section class="section-title">Oggi</section>
+<section class="section-title">
+  Oggi
+</section>
 
 <section class="today">
 
@@ -83,11 +100,34 @@
 
 </section>
 
-<section class="section-title">Produzione mensile</section>
+<section class="section-title">
+  Produzione mensile
+</section>
 
 <section class="monthly" id="monthlyData">
-  <div class="monthly-empty">Caricamento…</div>
+  <div class="monthly-empty">
+    Caricamento…
+  </div>
 </section>
+
+<section class="section-title">
+  Confronto Nufri
+</section>
+
+<section class="nufri" id="nufriData">
+  <div class="nufri-empty">
+    Caricamento…
+  </div>
+</section>
+
+<button
+  id="nufriToggle"
+  class="nufri-toggle"
+  type="button"
+  hidden
+>
+  Mostra mesi precedenti
+</button>
 
 <footer>
   <span>Ultimo aggiornamento</span>
