@@ -99,9 +99,14 @@ function renderMonthly(data){
     </div>
   `;
 
-  data.forEach((row,index)=>{
+  const monthlyData=[...data].sort((a,b)=>
+    new Date(a.mese+"T00:00:00")-
+    new Date(b.mese+"T00:00:00")
+  );
 
-    const current=index===0;
+  monthlyData.forEach((row,index)=>{
+
+    const current=index===monthlyData.length-1;
 
     html+=`
       <div class="monthly-row${current?" monthly-current":""}">
