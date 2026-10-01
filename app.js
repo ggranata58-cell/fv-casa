@@ -1,5 +1,5 @@
 const SUPABASE_FUNCTION_URL="https://bstcydrgyspgofckzybl.supabase.co/functions/v1/fv-casa-data";
-const SUPABASE_PUBLISHABLE_KEY="INSERIRE_QUI_LA_CHIAVE_PUBLISHABLE";
+const SUPABASE_PUBLISHABLE_KEY="sb_publishable_LURu7IVWMgryAlEq6upJKQ_wrTMfBJ6";
 
 const $=id=>document.getElementById(id);
 
