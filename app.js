@@ -266,8 +266,8 @@ function renderSavingsPage(){
     const produzione=Number(energyMonth.produzione_fv_kwh)||0;
     const immesso=Number(energyMonth.immesso_rete_kwh)||0;
     const autoconsumo=Math.max(0,produzione-immesso);
-    const valoreAutoconsumo=autoconsumo*0.154852;
-    const valoreImmissione=immesso*0.06;
+    const valoreAutoconsumo=Math.round(autoconsumo*0.154852*100)/100;
+    const valoreImmissione=Math.round(immesso*0.06*100)/100;
     const totale=valoreAutoconsumo+valoreImmissione;
     breakdown.innerHTML=
       '<div class="breakdown-row"><span>Energia autoconsumata</span><strong>'+formatKwh(autoconsumo)+'</strong><em>'+formatEuro(valoreAutoconsumo)+'</em></div>'+
