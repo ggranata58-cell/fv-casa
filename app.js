@@ -57,7 +57,7 @@ function setPage(page){
   if(risparmio) renderSavingsPage();
 }
 
-function createChart(containerId,rows,series,titleSuffix){
+function createChart(containerId,rows,series,titleSuffix,formatter=formatNumber){
   const container=$(containerId);
   if(!Array.isArray(rows)||rows.length===0){
     container.innerHTML='<div class="chart-empty">Nessun dato storico disponibile</div>';
@@ -76,7 +76,7 @@ function createChart(containerId,rows,series,titleSuffix){
       <div class="chart-row">
         <span class="chart-label">${row.label}</span>
         <div class="chart-track"><div class="chart-bar ${series}" style="width:${width}%"></div></div>
-        <strong class="chart-value">${formatNumber(value,1)}</strong>
+        <strong class="chart-value">${formatter(value)}</strong>
       </div>
     `;
   }).join("");
@@ -183,7 +183,7 @@ function renderHistory(period=storicoPeriodo){
 
   const rows=getHistoryRows();
 
-  createChart("productionChart",rows.map(row=>({label:row.label,value:row.produzione})),"chart-production","Produzione");
+  createChart("productionChart",rows.map(row=>({label:row.label,value:row.produzione})),"chart-production","Produzione",formatKwh);
 
   const energyContainer=$("energyChart");
 
@@ -194,7 +194,7 @@ function renderHistory(period=storicoPeriodo){
       <div class="energy-chart-item">
         <span class="energy-chart-name">${className==="consumo"?"Consumo":className==="immesso"?"Immissione":"Prelievo"}</span>
         <div class="chart-track"><div class="chart-bar ${className}" style="width:${max>0?Math.max(3,(value/max)*100):3}%"></div></div>
-        <strong>${formatNumber(value,1)}</strong>
+        <strong>${formatKwh(value)}</strong>
       </div>`;
 
     energyContainer.innerHTML=rows.map(row=>`
