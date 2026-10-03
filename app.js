@@ -329,6 +329,22 @@ function toggleSavings(){
 }
 
 
+function setTodayDate(){
+
+  const today=new Date();
+
+  const text=today.toLocaleDateString("it-IT",{
+    weekday:"long",
+    day:"numeric",
+    month:"long",
+    year:"numeric"
+  });
+
+  $("todayDate").textContent=
+    text.charAt(0).toUpperCase()+text.slice(1);
+}
+
+
 async function loadData(){
 
   const status=$("status");
