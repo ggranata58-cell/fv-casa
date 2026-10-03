@@ -82,12 +82,42 @@
 </section>
 </section>
 
+<section id="pageRisparmio" class="app-page" hidden>
+<header class="page-header">
+  <h1>💰 Risparmio</h1>
+  <div class="page-subtitle">Quanto ti fa risparmiare il tuo impianto fotovoltaico</div>
+</header>
+
+<section class="home-card savings-card">
+  <div class="home-card-title">Risparmio</div>
+  <div class="savings-grid">
+    <div class="saving-item"><div class="saving-name">Oggi</div><strong id="pageRisparmioOggi">—</strong></div>
+    <div class="saving-item"><div class="saving-name">Questo mese</div><strong id="pageRisparmioMese">—</strong></div>
+    <div class="saving-item"><div class="saving-name">Cumulato</div><strong id="pageRisparmioCumulato">—</strong></div>
+  </div>
+</section>
+
+<section class="history-card savings-history">
+  <div class="history-title">📈 Andamento del risparmio</div>
+  <div id="savingsTrend" class="chart-area">
+    <div class="chart-empty">Nessun dato disponibile</div>
+  </div>
+</section>
+
+<section class="history-card energy-history">
+  <div class="history-title">🔎 Da dove nasce il risparmio</div>
+  <div id="savingsBreakdown" class="breakdown-list">
+    <div class="chart-empty">Nessun dato disponibile</div>
+  </div>
+</section>
+</section>
+
 <div id="status" class="status">Connessione in corso…</div>
 
 <nav class="bottom-nav" aria-label="Navigazione principale">
   <button class="nav-item active" type="button" data-page="Oggi" aria-label="Oggi" onclick="showPage('Oggi')"><span>🏠</span><small>Oggi</small></button>
   <button class="nav-item" type="button" data-page="Storico" aria-label="Storico" onclick="showPage('Storico')"><span>📊</span><small>Storico</small></button>
-  <button class="nav-item" type="button" data-page="Risparmio" aria-label="Risparmio"><span>💰</span><small>Risparmio</small></button>
+  <button class="nav-item" type="button" data-page="Risparmio" aria-label="Risparmio" onclick="showPage('Risparmio')"><span>💰</span><small>Risparmio</small></button>
   <button class="nav-item" type="button" data-page="Impostazioni" aria-label="Impostazioni"><span>⚙️</span><small>Impostazioni</small></button>
 </nav>
 
@@ -98,6 +128,6 @@
 
 </main>
 
-<script>function showPage(page){document.getElementById("pageOggi").hidden=page!=="Oggi";document.getElementById("pageStorico").hidden=page!=="Storico";document.querySelectorAll(".nav-item").forEach(function(b){b.classList.toggle("active",b.getAttribute("data-page")===page);});}</script><script src="app.js?v=7"></script>
+<script>function showPage(page){document.getElementById("pageOggi").hidden=page!=="Oggi";document.getElementById("pageStorico").hidden=page!=="Storico";document.getElementById("pageRisparmio").hidden=page!=="Risparmio";document.querySelectorAll(".nav-item").forEach(function(b){b.classList.toggle("active",b.getAttribute("data-page")===page);});}</script><script src="app.js?v=7"></script>
 </body>
 </html>
