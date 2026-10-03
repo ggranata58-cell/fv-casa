@@ -242,6 +242,9 @@ function renderSavingsPage(){
 
   const corrente=risparmioData.length?risparmioData[0]:null;
   if(corrente){
+    const meseDisponibile=formatMonth(corrente.mese);
+    $("risparmioMese").previousElementSibling.textContent="Ultimo mese disponibile: "+meseDisponibile;
+    $("pageRisparmioMese").previousElementSibling.textContent="Ultimo mese disponibile: "+meseDisponibile;
     $("pageRisparmioMese").textContent=formatEuro(corrente.risparmio_fv);
     $("pageRisparmioCumulato").textContent=formatEuro(corrente.risparmio_netto_cumulato);
   }
