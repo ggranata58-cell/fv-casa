@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#f6f7f8">
+<meta name="theme-color" content="#eef0f2">
 <meta name="description" content="FV Casa - monitoraggio impianto fotovoltaico">
 <link rel="manifest" href="manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -17,6 +17,7 @@
 
 <main class="app">
 
+<section id="pageOggi" class="app-page">
 <header class="page-header">
   <h1>🏠 Oggi</h1>
   <div id="todayDate" class="today-date">—</div>
@@ -32,63 +33,62 @@
 
 <section class="home-card energy-card">
   <div class="home-card-title">⚡ Energia</div>
-
-  <div class="energy-row">
-    <span>Consumo</span>
-    <strong id="consumoKwh">—</strong>
-  </div>
-
-  <div class="energy-row">
-    <span>Immissione</span>
-    <strong id="immessoKwh">—</strong>
-  </div>
-
-  <div class="energy-row">
-    <span>Prelievo</span>
-    <strong id="prelevatoKwh">—</strong>
-  </div>
+  <div class="energy-row"><span>Consumo</span><strong id="consumoKwh">—</strong></div>
+  <div class="energy-row"><span>Immissione</span><strong id="immessoKwh">—</strong></div>
+  <div class="energy-row"><span>Prelievo</span><strong id="prelevatoKwh">—</strong></div>
 </section>
 
 <section class="home-card savings-card">
   <div class="home-card-title">💰 Risparmio</div>
-
   <div class="savings-grid">
-    <div class="saving-item">
-      <div class="saving-name">Oggi</div>
-      <strong id="risparmioOggi">—</strong>
-    </div>
-
-    <div class="saving-item">
-      <div class="saving-name">Questo mese</div>
-      <strong id="risparmioMese">—</strong>
-    </div>
-
-    <div class="saving-item">
-      <div class="saving-name">Cumulato</div>
-      <strong id="risparmioCumulato">—</strong>
-    </div>
+    <div class="saving-item"><div class="saving-name">Oggi</div><strong id="risparmioOggi">—</strong></div>
+    <div class="saving-item"><div class="saving-name">Questo mese</div><strong id="risparmioMese">—</strong></div>
+    <div class="saving-item"><div class="saving-name">Cumulato</div><strong id="risparmioCumulato">—</strong></div>
   </div>
+</section>
+</section>
+
+<section id="pageStorico" class="app-page" hidden>
+<header class="page-header">
+  <h1>📊 Storico</h1>
+  <div class="page-subtitle">Andamento della tua energia nel tempo</div>
+</header>
+
+<div class="period-selector" role="group" aria-label="Periodo">
+  <button class="period-button active" type="button" data-period="giorno">Giorno</button>
+  <button class="period-button" type="button" data-period="mese">Mese</button>
+  <button class="period-button" type="button" data-period="anno">Anno</button>
+</div>
+
+<section class="history-card production-history">
+  <div class="history-title">☀️ Produzione</div>
+  <div id="productionChart" class="chart-area">
+    <div class="chart-empty">Nessun dato storico disponibile</div>
+  </div>
+</section>
+
+<section class="history-card energy-history">
+  <div class="history-title">⚡ Energia</div>
+  <div id="energyChart" class="chart-area">
+    <div class="chart-empty">Nessun dato storico disponibile</div>
+  </div>
+</section>
+
+<section class="history-card savings-history">
+  <div class="history-title">💰 Risparmio</div>
+  <div id="savingsChart" class="chart-area">
+    <div class="chart-empty">Nessun dato storico disponibile</div>
+  </div>
+</section>
 </section>
 
 <div id="status" class="status">Connessione in corso…</div>
 
 <nav class="bottom-nav" aria-label="Navigazione principale">
-  <button class="nav-item active" type="button" aria-label="Oggi">
-    <span>🏠</span>
-    <small>Oggi</small>
-  </button>
-  <button class="nav-item" type="button" aria-label="Storico">
-    <span>📊</span>
-    <small>Storico</small>
-  </button>
-  <button class="nav-item" type="button" aria-label="Risparmio">
-    <span>💰</span>
-    <small>Risparmio</small>
-  </button>
-  <button class="nav-item" type="button" aria-label="Impostazioni">
-    <span>⚙️</span>
-    <small>Impostazioni</small>
-  </button>
+  <button class="nav-item active" type="button" data-page="Oggi" aria-label="Oggi"><span>🏠</span><small>Oggi</small></button>
+  <button class="nav-item" type="button" data-page="Storico" aria-label="Storico"><span>📊</span><small>Storico</small></button>
+  <button class="nav-item" type="button" data-page="Risparmio" aria-label="Risparmio"><span>💰</span><small>Risparmio</small></button>
+  <button class="nav-item" type="button" data-page="Impostazioni" aria-label="Impostazioni"><span>⚙️</span><small>Impostazioni</small></button>
 </nav>
 
 <footer>
