@@ -246,6 +246,66 @@ button{font:inherit}
   font-size:10px;
 }
 
+.breakdown-list{
+  display:flex;
+  flex-direction:column;
+  gap:0;
+}
+
+.breakdown-row{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 72px 72px;
+  align-items:center;
+  column-gap:12px;
+  padding:11px 0;
+  border-bottom:1px solid rgba(31,41,55,.08);
+}
+
+.breakdown-row span{
+  min-width:0;
+  color:#59616c;
+  font-size:12px;
+  line-height:1.25;
+}
+
+.breakdown-row strong{
+  min-width:0;
+  text-align:right;
+  font-size:12px;
+  font-weight:750;
+  white-space:nowrap;
+}
+
+.breakdown-row em{
+  min-width:0;
+  text-align:right;
+  color:#4b5563;
+  font-size:12px;
+  font-style:normal;
+  white-space:nowrap;
+}
+
+.breakdown-total{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:center;
+  gap:12px;
+  padding-top:13px;
+}
+
+.breakdown-total span{
+  color:#374151;
+  font-size:12px;
+  font-weight:650;
+}
+
+.breakdown-total strong{
+  text-align:right;
+  font-size:14px;
+  font-weight:750;
+  white-space:nowrap;
+}
+
 .chart-bar.consumo{background:#62a9d6}
 .chart-bar.immesso{background:#7dbbdb}
 .chart-bar.prelevato{background:#9baec0}
@@ -315,4 +375,6 @@ footer strong{
   .saving-item strong{font-size:16px}
   .chart-row{grid-template-columns:minmax(62px,1fr) minmax(70px,1.5fr) auto}
   .energy-chart-item{grid-template-columns:60px minmax(65px,1fr) auto}
+  .breakdown-row{grid-template-columns:minmax(0,1fr) 66px 66px;column-gap:8px}
+  .breakdown-row span,.breakdown-row strong,.breakdown-row em{font-size:11px}
 }
