@@ -91,6 +91,8 @@ function createChart(containerId,rows,series,titleSuffix){
 }
 
 function getHistoryRows(){
+  if(storicoPeriodo==="giorno") return [];
+
   if(!Array.isArray(storicoData)) return [];
 
   if(storicoPeriodo==="anno"){
@@ -99,7 +101,7 @@ function getHistoryRows(){
     storicoData.forEach(row=>{
       if(!row.mese) return;
       const year=String(row.mese).slice(0,4);
-      if(!/^\d{4}$/.test(year)) return;
+      if(!/^\\d{4}$/.test(year)) return;
 
       if(!grouped[year]){
         grouped[year]={produzione:0,consumo:0,immesso:0,prelevato:0};
@@ -111,7 +113,9 @@ function getHistoryRows(){
       grouped[year].prelevato+=Number(row.prelevato_rete_kwh)||0;
     });
 
-    return Object.entries(grouped).sort((a,b)=>a[0].localeCompare(b[0])).map(([label,v])=>({label,...v}));
+    return Object.entries(grouped)
+      .sort((a,b)=>a[0].localeCompare(b[0]))
+      .map(([label,v])=>({label,...v}));
   }
 
   return [...storicoData]
@@ -125,12 +129,66 @@ function getHistoryRows(){
     }));
 }
 
+function getSavingsRows(){
+  if(storicoPeriodo==="giorno") return [];
+  if(!Array.isArray(risparmioData)) return [];
+
+  if(storicoPeriodo==="anno"){
+    const grouped={};
+
+    risparmioData.forEach(row=>{
+      if(!row.mese) return;
+      const year=String(row.mese).slice(0,4);
+      if(!/^\\d{4}$/.test(year)) return;
+
+      if(!grouped[year]){
+        grouped[year]={
+          risparmio_fv:0,
+          risparmio_netto:0,
+          risparmio_netto_cumulato:0,
+          ultimo_mese:""
+        };
+      }
+
+      grouped[year].risparmio_fv+=Number(row.risparmio_fv)||0;
+      grouped[year].risparmio_netto+=Number(row.risparmio_netto)||0;
+
+      if(!grouped[year].ultimo_mese || String(row.mese)>grouped[year].ultimo_mese){
+        grouped[year].ultimo_mese=String(row.mese);
+        grouped[year].risparmio_netto_cumulato=Number(row.risparmio_netto_cumulato)||0;
+      }
+    });
+
+    return Object.entries(grouped)
+      .sort((a,b)=>a[0].localeCompare(b[0]))
+      .map(([label,v])=>({label,...v}));
+  }
+
+  return [...risparmioData]
+    .sort((a,b)=>new Date(a.mese+"T00:00:00")-new Date(b.mese+"T00:00:00"))
+    .map(row=>({
+      label:formatMonth(row.mese),
+      risparmio_fv:Number(row.risparmio_fv)||0,
+      risparmio_netto:Number(row.risparmio_netto)||0,
+      risparmio_netto_cumulato:Number(row.risparmio_netto_cumulato)||0
+    }));
+}
+
 function renderHistory(period=storicoPeriodo){
   storicoPeriodo=period;
 
   document.querySelectorAll(".period-button").forEach(button=>{
     button.classList.toggle("active",button.dataset.period===period);
   });
+
+  const noDailyMessage='<div class="chart-empty">Storico giornaliero non disponibile</div>';
+
+  if(period==="giorno"){
+    $("productionChart").innerHTML=noDailyMessage;
+    $("energyChart").innerHTML=noDailyMessage;
+    $("savingsChart").innerHTML=noDailyMessage;
+    return;
+  }
 
   const rows=getHistoryRows();
 
@@ -141,48 +199,34 @@ function renderHistory(period=storicoPeriodo){
     "Produzione"
   );
 
-  createChart(
-    "energyChart",
-    rows.map(row=>({
-      label:row.label,
-      value:row.consumo
-    })),
-    "chart-energy",
-    "Consumo"
-  );
-
   const energyContainer=$("energyChart");
 
   if(rows.length){
-    energyContainer.innerHTML=rows.map(row=>{
-      const max=Math.max(
-        ...rows.map(item=>Math.max(item.consumo,item.immesso,item.prelevato)),
-        0
-      );
+    const max=Math.max(
+      ...rows.map(item=>Math.max(item.consumo,item.immesso,item.prelevato)),
+      0
+    );
 
-      const makeBar=(value,className)=>`
-        <div class="energy-chart-item">
-          <span class="energy-chart-name">${className==="consumo"?"Consumo":className==="immesso"?"Immissione":"Prelievo"}</span>
-          <div class="chart-track"><div class="chart-bar ${className}" style="width:${max>0?Math.max(3,(value/max)*100):3}%"></div></div>
-          <strong>${formatNumber(value,1)}</strong>
-        </div>`;
+    const makeBar=(value,className)=>`
+      <div class="energy-chart-item">
+        <span class="energy-chart-name">${className==="consumo"?"Consumo":className==="immesso"?"Immissione":"Prelievo"}</span>
+        <div class="chart-track"><div class="chart-bar ${className}" style="width:${max>0?Math.max(3,(value/max)*100):3}%"></div></div>
+        <strong>${formatNumber(value,1)}</strong>
+      </div>`;
 
-      return `
-        <div class="chart-group">
-          <div class="chart-label chart-group-label">${row.label}</div>
-          ${makeBar(row.consumo,"consumo")}
-          ${makeBar(row.immesso,"immesso")}
-          ${makeBar(row.prelevato,"prelevato")}
-        </div>
-      `;
-    }).join("");
+    energyContainer.innerHTML=rows.map(row=>`
+      <div class="chart-group">
+        <div class="chart-label chart-group-label">${row.label}</div>
+        ${makeBar(row.consumo,"consumo")}
+        ${makeBar(row.immesso,"immesso")}
+        ${makeBar(row.prelevato,"prelevato")}
+      </div>
+    `).join("");
   }else{
     energyContainer.innerHTML='<div class="chart-empty">Nessun dato storico disponibile</div>';
   }
 
-  const savingsRows=risparmioData.slice().sort((a,b)=>
-    new Date(a.mese+"T00:00:00")-new Date(b.mese+"T00:00:00")
-  );
+  const savingsRows=getSavingsRows();
 
   if(savingsRows.length){
     const values=savingsRows.map(row=>Number(row.risparmio_fv)||0);
@@ -194,7 +238,7 @@ function renderHistory(period=storicoPeriodo){
 
       return `
         <div class="chart-row">
-          <span class="chart-label">${formatMonth(row.mese)}</span>
+          <span class="chart-label">${row.label}</span>
           <div class="chart-track">
             <div class="chart-bar savings" style="width:${width}%"></div>
           </div>
@@ -202,19 +246,6 @@ function renderHistory(period=storicoPeriodo){
         </div>
       `;
     }).join("");
-  }else{
-    $("savingsChart").innerHTML='<div class="chart-empty">Nessun dato storico disponibile</div>';
-  }
-  if(savingsRows.length){
-    $("savingsChart").innerHTML=savingsRows.map(row=>`
-      <div class="chart-row">
-        <span class="chart-label">${formatMonth(row.mese)}</span>
-        <div class="chart-track">
-          <div class="chart-bar savings" style="width:${Math.max(3,Math.min(100,Math.abs(Number(row.risparmio_fv)||0)))}%"></div>
-        </div>
-        <strong class="chart-value">${formatEuro(row.risparmio_fv)}</strong>
-      </div>
-    `).join("");
   }else{
     $("savingsChart").innerHTML='<div class="chart-empty">Nessun dato storico disponibile</div>';
   }
