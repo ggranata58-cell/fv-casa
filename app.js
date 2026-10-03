@@ -345,6 +345,9 @@ function setTodayDate(){
 }
 
 
+setTodayDate();
+
+
 async function loadData(){
 
   const status=$("status");
