@@ -46,12 +46,15 @@ function setTodayDate(){
 function setPage(page){
   const oggi=page==="Oggi";
   const storico=page==="Storico";
+  const risparmio=page==="Risparmio";
   $("pageOggi").hidden=!oggi;
   $("pageStorico").hidden=!storico;
+  $("pageRisparmio").hidden=!risparmio;
   document.querySelectorAll(".nav-item").forEach(button=>{
     button.classList.toggle("active",button.dataset.page===page);
   });
   if(storico) renderHistory(storicoPeriodo);
+  if(risparmio) renderSavingsPage();
 }
 
 function createChart(containerId,rows,series,titleSuffix){
@@ -229,6 +232,47 @@ function renderHistory(period=storicoPeriodo){
   }
 }
 
+function renderSavingsPage(){
+  const produzioneOggi=Number($("produzioneKwh").textContent.replace(",", "."))||0;
+  const immessoOggi=Number($("immessoKwh").textContent.replace(",", "."))||0;
+  const autoconsumoOggi=Math.max(0,produzioneOggi-immessoOggi);
+  const risparmioOggi=(autoconsumoOggi*0.154852)+(immessoOggi*0.06);
+
+  $("pageRisparmioOggi").textContent=formatEuro(risparmioOggi);
+
+  const corrente=risparmioData.length?risparmioData[0]:null;
+  if(corrente){
+    $("pageRisparmioMese").textContent=formatEuro(corrente.risparmio_fv);
+    $("pageRisparmioCumulato").textContent=formatEuro(corrente.risparmio_netto_cumulato);
+  }
+
+  const trend=[...risparmioData].sort((a,b)=>new Date(a.mese+"T00:00:00")-new Date(b.mese+"T00:00:00"));
+  const trendContainer=$("savingsTrend");
+  if(trend.length){
+    const max=Math.max(...trend.map(row=>Number(row.risparmio_fv)||0),0);
+    trendContainer.innerHTML=trend.map(row=>{
+      const value=Number(row.risparmio_fv)||0;
+      const width=max>0?Math.max(3,(value/max)*100):3;
+      return '<div class="chart-row"><span class="chart-label">'+formatMonth(row.mese)+'</span><div class="chart-track"><div class="chart-bar savings" style="width:'+width+'%"></div></div><strong class="chart-value">'+formatEuro(value)+'</strong></div>';
+    }).join("");
+  }
+
+  const energyMonth=storicoData.find(row=>corrente&&String(row.mese)===String(corrente.mese));
+  const breakdown=$("savingsBreakdown");
+  if(energyMonth){
+    const produzione=Number(energyMonth.produzione_fv_kwh)||0;
+    const immesso=Number(energyMonth.immesso_rete_kwh)||0;
+    const autoconsumo=Math.max(0,produzione-immesso);
+    const valoreAutoconsumo=autoconsumo*0.154852;
+    const valoreImmissione=immesso*0.06;
+    const totale=valoreAutoconsumo+valoreImmissione;
+    breakdown.innerHTML=
+      '<div class="breakdown-row"><span>Energia autoconsumata</span><strong>'+formatKwh(autoconsumo)+'</strong><em>'+formatEuro(valoreAutoconsumo)+'</em></div>'+
+      '<div class="breakdown-row"><span>Energia immessa in rete</span><strong>'+formatKwh(immesso)+'</strong><em>'+formatEuro(valoreImmissione)+'</em></div>'+
+      '<div class="breakdown-total"><span>Totale risparmio FV</span><strong>'+formatEuro(totale)+'</strong></div>';
+  }
+}
+
 function renderMonthly(data){}
 function renderNufri(data){}
 function renderSavings(data){}
@@ -238,7 +282,7 @@ function setupNavigation(){
     button.addEventListener("click",event=>{
       event.preventDefault();
       const page=button.getAttribute("data-page");
-      if(page==="Oggi"||page==="Storico") setPage(page);
+      if(page==="Oggi"||page==="Storico"||page==="Risparmio") setPage(page);
     });
   });
 
@@ -296,6 +340,7 @@ async function loadData(){
       [];
 
     renderHistory(storicoPeriodo);
+    renderSavingsPage();
     status.textContent="Dati aggiornati";
   }catch(error){
     console.error(error);
