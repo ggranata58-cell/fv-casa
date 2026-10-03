@@ -213,8 +213,9 @@ function renderSavings(data){
 
 function setupNavigation(){
   document.querySelectorAll(".nav-item").forEach(button=>{
-    button.addEventListener("click",()=>{
-      const page=button.dataset.page;
+    button.addEventListener("click",event=>{
+      event.preventDefault();
+      const page=button.getAttribute("data-page");
       if(page==="Oggi"||page==="Storico"){
         setPage(page);
       }
