@@ -85,8 +85,8 @@
 <div id="status" class="status">Connessione in corso…</div>
 
 <nav class="bottom-nav" aria-label="Navigazione principale">
-  <button class="nav-item active" type="button" data-page="Oggi" aria-label="Oggi"><span>🏠</span><small>Oggi</small></button>
-  <button class="nav-item" type="button" data-page="Storico" aria-label="Storico"><span>📊</span><small>Storico</small></button>
+  <button class="nav-item active" type="button" data-page="Oggi" aria-label="Oggi" onclick="showPage('Oggi')"><span>🏠</span><small>Oggi</small></button>
+  <button class="nav-item" type="button" data-page="Storico" aria-label="Storico" onclick="showPage('Storico')"><span>📊</span><small>Storico</small></button>
   <button class="nav-item" type="button" data-page="Risparmio" aria-label="Risparmio"><span>💰</span><small>Risparmio</small></button>
   <button class="nav-item" type="button" data-page="Impostazioni" aria-label="Impostazioni"><span>⚙️</span><small>Impostazioni</small></button>
 </nav>
@@ -98,6 +98,6 @@
 
 </main>
 
-<script src="app.js?v=5"></script>
+<script>function showPage(page){document.getElementById("pageOggi").hidden=page!=="Oggi";document.getElementById("pageStorico").hidden=page!=="Storico";document.querySelectorAll(".nav-item").forEach(function(b){b.classList.toggle("active",b.getAttribute("data-page")===page);});}</script><script src="app.js?v=6"></script>
 </body>
 </html>
