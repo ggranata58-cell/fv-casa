@@ -373,49 +373,40 @@ async function loadData(){
 
     const d=result.dati;
 
-
-    $("produzioneKw").textContent=
-      formatNumber(d.produzione_fv_kw);
-
-
-    $("consumoKw").textContent=
-      formatNumber(d.consumo_casa_kw);
-
-
-    $("immissioneKw").textContent=
-      formatNumber(d.immissione_rete_kw);
-
-
-    $("prelievoKw").textContent=
-      formatNumber(d.prelievo_rete_kw);
-
-
     $("produzioneKwh").textContent=
-      formatKwh(d.produzione_fv_kwh);
-
+      formatKwh(d.produzione_fv_kwh).replace(" kWh","");
 
     $("consumoKwh").textContent=
       formatKwh(d.consumo_casa_kwh);
 
-
     $("immessoKwh").textContent=
       formatKwh(d.immesso_rete_kwh);
-
 
     $("prelevatoKwh").textContent=
       formatKwh(d.prelevato_rete_kwh);
 
+    const risparmio=Array.isArray(result.risparmio)
+      ? result.risparmio
+      : [];
+
+    const corrente=risparmio.length
+      ? risparmio[0]
+      : null;
+
+    if(corrente){
+
+      $("risparmioMese").textContent=
+        formatEuro(corrente.risparmio_fv);
+
+      $("risparmioCumulato").textContent=
+        formatEuro(corrente.risparmio_netto_cumulato);
+
+    }
+
+    $("risparmioOggi").textContent="—";
 
     $("lastUpdate").textContent=
       formatTime(d.rilevazione_at);
-
-
-    renderMonthly(result.mensile);
-
-    renderNufri(result.nufri);
-
-    renderSavings(result.risparmio);
-
 
     status.textContent="Dati aggiornati";
 
@@ -426,44 +417,4 @@ async function loadData(){
     status.textContent=
       "Impossibile aggiornare i dati";
   }
-}
-
-
-$("refreshButton").addEventListener(
-  "click",
-  loadData
-);
-
-
-$("nufriToggle").addEventListener(
-  "click",
-  toggleNufri
-);
-
-
-$("savingsToggle").addEventListener(
-  "click",
-  toggleSavings
-);
-
-
-loadData();
-
-
-setInterval(
-  loadData,
-  5*60*1000
-);
-
-
-if("serviceWorker"in navigator){
-
-  window.addEventListener(
-    "load",
-    ()=>{
-      navigator.serviceWorker
-        .register("sw.js")
-        .catch(console.error);
-    }
-  );
 }
