@@ -46,53 +46,42 @@ function setTodayDate(){
 function setPage(page){
   const oggi=page==="Oggi";
   const storico=page==="Storico";
-
   $("pageOggi").hidden=!oggi;
   $("pageStorico").hidden=!storico;
-
   document.querySelectorAll(".nav-item").forEach(button=>{
     button.classList.toggle("active",button.dataset.page===page);
   });
-
   if(storico) renderHistory(storicoPeriodo);
 }
 
 function createChart(containerId,rows,series,titleSuffix){
   const container=$(containerId);
-
   if(!Array.isArray(rows)||rows.length===0){
     container.innerHTML='<div class="chart-empty">Nessun dato storico disponibile</div>';
     return;
   }
-
   const valid=rows.filter(row=>Number.isFinite(Number(row.value)));
   if(!valid.length){
     container.innerHTML='<div class="chart-empty">Nessun dato storico disponibile</div>';
     return;
   }
-
   const max=Math.max(...valid.map(row=>Number(row.value)),0);
-
   container.innerHTML=valid.map(row=>{
     const value=Number(row.value);
     const width=max>0 ? Math.max(3,(value/max)*100) : 3;
     return `
       <div class="chart-row">
         <span class="chart-label">${row.label}</span>
-        <div class="chart-track">
-          <div class="chart-bar ${series}" style="width:${width}%"></div>
-        </div>
+        <div class="chart-track"><div class="chart-bar ${series}" style="width:${width}%"></div></div>
         <strong class="chart-value">${formatNumber(value,1)}</strong>
       </div>
     `;
   }).join("");
-
   container.dataset.title=titleSuffix;
 }
 
 function getHistoryRows(){
   if(storicoPeriodo==="giorno") return [];
-
   if(!Array.isArray(storicoData)) return [];
 
   if(storicoPeriodo==="anno"){
@@ -101,7 +90,7 @@ function getHistoryRows(){
     storicoData.forEach(row=>{
       if(!row.mese) return;
       const year=String(row.mese).slice(0,4);
-      if(!/^\\d{4}$/.test(year)) return;
+      if(!/^\d{4}$/.test(year)) return;
 
       if(!grouped[year]){
         grouped[year]={produzione:0,consumo:0,immesso:0,prelevato:0};
@@ -139,7 +128,7 @@ function getSavingsRows(){
     risparmioData.forEach(row=>{
       if(!row.mese) return;
       const year=String(row.mese).slice(0,4);
-      if(!/^\\d{4}$/.test(year)) return;
+      if(!/^\d{4}$/.test(year)) return;
 
       if(!grouped[year]){
         grouped[year]={
@@ -176,7 +165,6 @@ function getSavingsRows(){
 
 function renderHistory(period=storicoPeriodo){
   storicoPeriodo=period;
-
   document.querySelectorAll(".period-button").forEach(button=>{
     button.classList.toggle("active",button.dataset.period===period);
   });
@@ -192,20 +180,12 @@ function renderHistory(period=storicoPeriodo){
 
   const rows=getHistoryRows();
 
-  createChart(
-    "productionChart",
-    rows.map(row=>({label:row.label,value:row.produzione})),
-    "chart-production",
-    "Produzione"
-  );
+  createChart("productionChart",rows.map(row=>({label:row.label,value:row.produzione})),"chart-production","Produzione");
 
   const energyContainer=$("energyChart");
 
   if(rows.length){
-    const max=Math.max(
-      ...rows.map(item=>Math.max(item.consumo,item.immesso,item.prelevato)),
-      0
-    );
+    const max=Math.max(...rows.map(item=>Math.max(item.consumo,item.immesso,item.prelevato)),0);
 
     const makeBar=(value,className)=>`
       <div class="energy-chart-item">
@@ -239,9 +219,7 @@ function renderHistory(period=storicoPeriodo){
       return `
         <div class="chart-row">
           <span class="chart-label">${row.label}</span>
-          <div class="chart-track">
-            <div class="chart-bar savings" style="width:${width}%"></div>
-          </div>
+          <div class="chart-track"><div class="chart-bar savings" style="width:${width}%"></div></div>
           <strong class="chart-value">${formatEuro(value)}</strong>
         </div>
       `;
@@ -251,33 +229,21 @@ function renderHistory(period=storicoPeriodo){
   }
 }
 
-function renderMonthly(data){
-  if(!Array.isArray(data)) return;
-}
-
-function renderNufri(data){
-  if(!Array.isArray(data)) return;
-}
-
-function renderSavings(data){
-  if(!Array.isArray(data)) return;
-}
+function renderMonthly(data){}
+function renderNufri(data){}
+function renderSavings(data){}
 
 function setupNavigation(){
   document.querySelectorAll(".nav-item").forEach(button=>{
     button.addEventListener("click",event=>{
       event.preventDefault();
       const page=button.getAttribute("data-page");
-      if(page==="Oggi"||page==="Storico"){
-        setPage(page);
-      }
+      if(page==="Oggi"||page==="Storico") setPage(page);
     });
   });
 
   document.querySelectorAll(".period-button").forEach(button=>{
-    button.addEventListener("click",()=>{
-      renderHistory(button.dataset.period);
-    });
+    button.addEventListener("click",()=>renderHistory(button.dataset.period));
   });
 }
 
@@ -296,16 +262,10 @@ async function loadData(){
       headers.Authorization="Bearer "+SUPABASE_PUBLISHABLE_KEY;
     }
 
-    const response=await fetch(
-      SUPABASE_FUNCTION_URL,
-      {method:"GET",headers,cache:"no-store"}
-    );
-
+    const response=await fetch(SUPABASE_FUNCTION_URL,{method:"GET",headers,cache:"no-store"});
     const result=await response.json();
 
-    if(!response.ok||!result.ok||!result.dati){
-      throw new Error(result.error||"HTTP "+response.status);
-    }
+    if(!response.ok||!result.ok||!result.dati) throw new Error(result.error||"HTTP "+response.status);
 
     const d=result.dati;
 
@@ -332,9 +292,7 @@ async function loadData(){
       [];
 
     renderHistory(storicoPeriodo);
-
     status.textContent="Dati aggiornati";
-
   }catch(error){
     console.error(error);
     status.textContent="Impossibile aggiornare i dati";
@@ -342,11 +300,8 @@ async function loadData(){
 }
 
 loadData();
-
 setInterval(loadData,300000);
 
 if("serviceWorker" in navigator){
-  navigator.serviceWorker.register("./sw.js").catch(error=>{
-    console.error("Service Worker:",error);
-  });
+  navigator.serviceWorker.register("./sw.js").catch(error=>console.error("Service Worker:",error));
 }
