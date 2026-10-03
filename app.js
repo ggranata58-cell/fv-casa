@@ -282,7 +282,11 @@ async function loadData(){
       $("risparmioCumulato").textContent=formatEuro(corrente.risparmio_netto_cumulato);
     }
 
-    $("risparmioOggi").textContent="—";
+    const produzioneOggi=Number(d.produzione_fv_kwh)||0;
+    const immessoOggi=Number(d.immesso_rete_kwh)||0;
+    const autoconsumoOggi=Math.max(0,produzioneOggi-immessoOggi);
+    const risparmioOggi=(autoconsumoOggi*0.154852)+(immessoOggi*0.06);
+    $("risparmioOggi").textContent=formatEuro(risparmioOggi);
     $("lastUpdate").textContent=formatTime(d.rilevazione_at);
 
     storicoData=
