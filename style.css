@@ -254,9 +254,9 @@ button{font:inherit}
 
 .breakdown-row{
   display:grid;
-  grid-template-columns:minmax(0,1fr) 72px 72px;
+  grid-template-columns:minmax(0,1fr) max-content max-content;
   align-items:center;
-  column-gap:12px;
+  column-gap:16px;
   padding:11px 0;
   border-bottom:1px solid rgba(31,41,55,.08);
 }
@@ -376,5 +376,5 @@ footer strong{
   .chart-row{grid-template-columns:minmax(62px,1fr) minmax(70px,1.5fr) auto}
   .energy-chart-item{grid-template-columns:60px minmax(65px,1fr) auto}
   .breakdown-row{grid-template-columns:minmax(0,1fr) 66px 66px;column-gap:8px}
-  .breakdown-row span,.breakdown-row strong,.breakdown-row em{font-size:11px}
+  .breakdown-row span{font-size:11px}.breakdown-row strong,.breakdown-row em{font-size:11px}
 }
