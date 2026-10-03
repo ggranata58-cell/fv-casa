@@ -1,430 +1,192 @@
 :root{
   font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  color:#e5e7eb;
-  background:#020617;
-  font-synthesis:none
+  color:#1f2937;
+  background:#f6f7f8;
+  font-synthesis:none;
 }
 
-*{
-  box-sizing:border-box
-}
+*{box-sizing:border-box}
 
 body{
   margin:0;
   min-height:100vh;
-  background:linear-gradient(180deg,#0f172a 0%,#020617 100%)
+  background:#f6f7f8;
 }
+
+button{font:inherit}
 
 .app{
-  width:min(100%,760px);
+  width:min(100%,390px);
   margin:0 auto;
-  padding:max(24px,env(safe-area-inset-top)) 18px 32px
+  padding:max(20px,env(safe-area-inset-top)) 16px calc(18px + env(safe-area-inset-bottom));
 }
 
-.header{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom:18px
+.page-header{
+  padding:4px 4px 18px;
 }
 
-.eyebrow{
-  font-size:11px;
-  letter-spacing:.12em;
-  color:#94a3b8
-}
-
-h1{
-  margin:4px 0 0;
-  font-size:34px;
-  line-height:1
-}
-
-.refresh{
-  width:46px;
-  height:46px;
-  border:0;
-  border-radius:50%;
-  background:#1e293b;
-  color:#f8fafc;
+.page-header h1{
+  margin:0;
   font-size:27px;
-  cursor:pointer
+  line-height:1.1;
+  font-weight:750;
+  letter-spacing:-.5px;
+}
+
+.today-date{
+  margin-top:3px;
+  color:#6b7280;
+  font-size:13px;
+}
+
+.home-card{
+  border-radius:22px;
+  padding:20px;
+  margin-bottom:13px;
+}
+
+.home-card-title{
+  font-size:15px;
+  font-weight:650;
+}
+
+.production-card{
+  background:#fff7d6;
+  padding:24px 20px 26px;
+}
+
+.production-value{
+  margin-top:13px;
+  display:flex;
+  align-items:baseline;
+  gap:6px;
+  font-size:42px;
+  line-height:1.05;
+  font-weight:780;
+  letter-spacing:-1.5px;
+}
+
+.production-value small{
+  font-size:18px;
+  font-weight:600;
+  letter-spacing:0;
+}
+
+.energy-card{
+  background:#e6f5ff;
+}
+
+.energy-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px 0;
+  border-bottom:1px solid rgba(31,41,55,.10);
+  font-size:15px;
+}
+
+.energy-row:first-of-type{
+  margin-top:8px;
+}
+
+.energy-row:last-child{
+  border-bottom:0;
+  padding-bottom:1px;
+}
+
+.energy-row strong{
+  font-weight:700;
+}
+
+.savings-card{
+  background:#e7f7ea;
+}
+
+.savings-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  margin-top:16px;
+}
+
+.saving-item{
+  min-width:0;
+  text-align:center;
+}
+
+.saving-name{
+  margin-bottom:7px;
+  color:#6b7280;
+  font-size:12px;
+}
+
+.saving-item strong{
+  font-size:18px;
+  font-weight:750;
+  white-space:nowrap;
 }
 
 .status{
-  min-height:22px;
-  margin-bottom:12px;
-  color:#94a3b8;
-  font-size:13px
+  min-height:18px;
+  margin:2px 4px 8px;
+  color:#6b7280;
+  font-size:12px;
+  text-align:center;
 }
 
-.hero-card,
-.card,
-.today,
-.monthly,
-.nufri-card,
-.savings-card{
-  border:1px solid #1e293b;
-  background:rgba(15,23,42,.82);
-  border-radius:22px;
-  box-shadow:0 12px 35px rgba(0,0,0,.18)
-}
-
-.hero-card{
-  padding:26px;
-  margin-bottom:14px
-}
-
-.hero-label,
-.card-label{
-  color:#94a3b8;
-  font-size:14px
-}
-
-.hero-value{
-  margin-top:6px;
-  font-size:clamp(48px,14vw,76px);
-  font-weight:750;
-  letter-spacing:-.04em;
-  color:#f8fafc
-}
-
-.hero-value small,
-.card-value small{
-  font-size:.38em;
-  color:#94a3b8;
-  font-weight:500
-}
-
-.hero-sub{
-  color:#64748b;
-  font-size:13px
-}
-
-.grid{
+.bottom-nav{
   display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:12px
+  grid-template-columns:repeat(4,1fr);
+  gap:3px;
+  margin-top:5px;
+  padding-top:8px;
 }
 
-.card{
-  padding:18px 14px
+.nav-item{
+  min-width:0;
+  border:0;
+  border-radius:13px;
+  background:transparent;
+  color:#59616c;
+  padding:9px 2px 5px;
+  cursor:pointer;
+  text-align:center;
 }
 
-.card-value{
-  margin-top:7px;
-  font-size:clamp(25px,7vw,36px);
+.nav-item.active{
+  background:#fff;
+  color:#20262d;
   font-weight:700;
-  letter-spacing:-.03em;
-  color:#f8fafc
 }
 
-.section-title{
-  margin:28px 4px 10px;
-  color:#94a3b8;
-  font-size:14px;
-  font-weight:650;
-  text-transform:uppercase;
-  letter-spacing:.08em
+.nav-item span{
+  display:block;
+  font-size:18px;
+  line-height:1;
+  margin-bottom:4px;
 }
 
-.today{
-  overflow:hidden
-}
-
-.today-row{
-  display:flex;
-  justify-content:space-between;
-  padding:17px 18px;
-  border-bottom:1px solid #1e293b
-}
-
-.today-row:last-child{
-  border-bottom:0
-}
-
-.today-row span{
-  color:#cbd5e1
-}
-
-.today-row strong{
-  color:#f8fafc
-}
-
-.monthly{
-  overflow:hidden
-}
-
-.monthly-header,
-.monthly-row{
-  display:grid;
-  grid-template-columns:1.15fr repeat(4,1fr);
-  gap:8px;
-  align-items:center
-}
-
-.monthly-header{
-  padding:13px 14px;
-  background:#111827;
-  color:#64748b;
+.nav-item small{
+  display:block;
   font-size:11px;
-  text-transform:uppercase;
-  letter-spacing:.04em
 }
-
-.monthly-header span:not(:first-child){
-  text-align:right
-}
-
-.monthly-row{
-  padding:16px 14px;
-  border-top:1px solid #1e293b;
-  font-size:13px
-}
-
-.monthly-row span:first-child{
-  color:#f8fafc;
-  font-weight:650
-}
-
-.monthly-value{
-  text-align:right;
-  color:#cbd5e1
-}
-
-.monthly-current{
-  color:#94a3b8
-}
-
-.monthly-empty{
-  padding:20px;
-  color:#64748b;
-  font-size:13px
-}
-
-
-/* CONFRONTO NUFRI */
-
-.nufri{
-  display:flex;
-  flex-direction:column;
-  gap:12px
-}
-
-.nufri-card{
-  padding:18px
-}
-
-.nufri-month{
-  margin-bottom:12px;
-  color:#f8fafc;
-  font-size:18px;
-  font-weight:700;
-  text-transform:capitalize
-}
-
-.nufri-row{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:16px;
-  padding:11px 0;
-  border-bottom:1px solid #1e293b;
-  font-size:14px
-}
-
-.nufri-row span{
-  color:#94a3b8
-}
-
-.nufri-row strong{
-  color:#f8fafc;
-  white-space:nowrap
-}
-
-.nufri-total{
-  border-bottom:0;
-  padding-bottom:0;
-  margin-top:2px
-}
-
-.nufri-total strong{
-  font-size:17px
-}
-
-.nufri-hidden{
-  display:none
-}
-
-.nufri-visible{
-  display:block
-}
-
-.nufri-empty{
-  padding:20px;
-  border:1px solid #1e293b;
-  background:rgba(15,23,42,.82);
-  border-radius:22px;
-  color:#64748b;
-  font-size:13px
-}
-
-.nufri-toggle{
-  display:block;
-  width:100%;
-  margin-top:12px;
-  padding:14px 18px;
-  border:1px solid #334155;
-  border-radius:16px;
-  background:#1e293b;
-  color:#e2e8f0;
-  font:inherit;
-  font-size:14px;
-  font-weight:600;
-  cursor:pointer
-}
-
-
-/* RISPARMIO ECONOMICO */
-
-.savings{
-  display:flex;
-  flex-direction:column;
-  gap:12px
-}
-
-.savings-card{
-  padding:18px
-}
-
-.savings-month{
-  margin-bottom:12px;
-  color:#f8fafc;
-  font-size:18px;
-  font-weight:700;
-  text-transform:capitalize
-}
-
-.savings-row{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:16px;
-  padding:11px 0;
-  border-bottom:1px solid #1e293b;
-  font-size:14px
-}
-
-.savings-row span{
-  color:#94a3b8
-}
-
-.savings-row strong{
-  color:#f8fafc;
-  white-space:nowrap
-}
-
-.savings-net{
-  margin-top:2px
-}
-
-.savings-net strong{
-  font-size:17px
-}
-
-.savings-cumulative{
-  border-bottom:0;
-  padding-bottom:0
-}
-
-.savings-cumulative strong{
-  font-size:17px
-}
-
-.positive{
-  color:#86efac !important
-}
-
-.negative{
-  color:#fca5a5 !important
-}
-
-.savings-hidden{
-  display:none
-}
-
-.savings-visible{
-  display:block
-}
-
-.savings-empty{
-  padding:20px;
-  border:1px solid #1e293b;
-  background:rgba(15,23,42,.82);
-  border-radius:22px;
-  color:#64748b;
-  font-size:13px
-}
-
-.savings-toggle{
-  display:block;
-  width:100%;
-  margin-top:12px;
-  padding:14px 18px;
-  border:1px solid #334155;
-  border-radius:16px;
-  background:#1e293b;
-  color:#e2e8f0;
-  font:inherit;
-  font-size:14px;
-  font-weight:600;
-  cursor:pointer
-}
-
 
 footer{
   display:flex;
   justify-content:space-between;
   gap:12px;
-  margin-top:20px;
-  padding:0 4px;
-  color:#64748b;
-  font-size:12px
+  margin:12px 4px 0;
+  color:#9ca3af;
+  font-size:11px;
 }
 
 footer strong{
-  color:#94a3b8
+  color:#6b7280;
+  font-weight:600;
 }
 
-button:active{
-  transform:scale(.96)
-}
-
-
-@media(max-width:620px){
-
-  .monthly{
-    overflow-x:auto
-  }
-
-  .monthly-header,
-  .monthly-row{
-    min-width:610px
-  }
-}
-
-
-@media(max-width:520px){
-
-  .grid{
-    grid-template-columns:1fr
-  }
-
-  .card{
-    padding:16px 18px
-  }
-
-  .card-value{
-    font-size:32px
-  }
+@media(max-width:340px){
+  .app{padding-left:12px;padding-right:12px}
+  .production-value{font-size:36px}
+  .saving-item strong{font-size:16px}
 }
