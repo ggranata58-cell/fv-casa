@@ -185,6 +185,27 @@ function renderHistory(period=storicoPeriodo){
   );
 
   if(savingsRows.length){
+    const values=savingsRows.map(row=>Number(row.risparmio_fv)||0);
+    const max=Math.max(...values,0);
+
+    $("savingsChart").innerHTML=savingsRows.map(row=>{
+      const value=Number(row.risparmio_fv)||0;
+      const width=max>0 ? Math.max(3,(value/max)*100) : 3;
+
+      return `
+        <div class="chart-row">
+          <span class="chart-label">${formatMonth(row.mese)}</span>
+          <div class="chart-track">
+            <div class="chart-bar savings" style="width:${width}%"></div>
+          </div>
+          <strong class="chart-value">${formatEuro(value)}</strong>
+        </div>
+      `;
+    }).join("");
+  }else{
+    $("savingsChart").innerHTML='<div class="chart-empty">Nessun dato storico disponibile</div>';
+  }
+  if(savingsRows.length){
     $("savingsChart").innerHTML=savingsRows.map(row=>`
       <div class="chart-row">
         <span class="chart-label">${formatMonth(row.mese)}</span>
