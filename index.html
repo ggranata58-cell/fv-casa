@@ -2,236 +2,102 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-
-<meta
-  name="viewport"
-  content="width=device-width, initial-scale=1, viewport-fit=cover"
->
-
-<meta name="theme-color" content="#0f172a">
-
-<meta
-  name="description"
-  content="FV Casa - monitoraggio impianto fotovoltaico"
->
-
-<!-- PWA / Android -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f6f7f8">
+<meta name="description" content="FV Casa - monitoraggio impianto fotovoltaico">
 <link rel="manifest" href="manifest.json">
-
-<!-- iPhone / iPad -->
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="FV Casa">
-
-<link
-  rel="apple-touch-icon"
-  href="icon-192.png"
->
-
+<link rel="apple-touch-icon" href="icon-192.png">
 <link rel="stylesheet" href="style.css">
-
 <title>FV Casa</title>
 </head>
-
 <body>
 
 <main class="app">
 
-<header class="header">
-  <div>
-    <div class="eyebrow">MONITORAGGIO FOTOVOLTAICO</div>
-    <h1>FV Casa</h1>
-  </div>
-
-  <button
-    id="refreshButton"
-    class="refresh"
-    type="button"
-    aria-label="Aggiorna dati"
-  >
-    ↻
-  </button>
+<header class="page-header">
+  <h1>🏠 Oggi</h1>
+  <div id="todayDate" class="today-date">—</div>
 </header>
 
-
-<section id="status" class="status">
-  Connessione in corso…
+<section class="home-card production-card">
+  <div class="home-card-title">☀️ Produzione</div>
+  <div class="production-value">
+    <span id="produzioneKwh">—</span>
+    <small>kWh</small>
+  </div>
 </section>
 
+<section class="home-card energy-card">
+  <div class="home-card-title">⚡ Energia</div>
 
-<section class="hero-card">
-
-  <div class="hero-label">
-    Produzione FV
-  </div>
-
-  <div class="hero-value">
-    <span id="produzioneKw">—</span>
-    <small> kW</small>
-  </div>
-
-  <div class="hero-sub">
-    potenza istantanea
-  </div>
-
-</section>
-
-
-<section class="grid">
-
-  <article class="card">
-
-    <div class="card-label">
-      Consumo casa
-    </div>
-
-    <div class="card-value">
-      <span id="consumoKw">—</span>
-      <small> kW</small>
-    </div>
-
-  </article>
-
-
-  <article class="card">
-
-    <div class="card-label">
-      Immissione rete
-    </div>
-
-    <div class="card-value">
-      <span id="immissioneKw">—</span>
-      <small> kW</small>
-    </div>
-
-  </article>
-
-
-  <article class="card">
-
-    <div class="card-label">
-      Prelievo rete
-    </div>
-
-    <div class="card-value">
-      <span id="prelievoKw">—</span>
-      <small> kW</small>
-    </div>
-
-  </article>
-
-</section>
-
-
-<section class="section-title">
-  Oggi
-</section>
-
-
-<section class="today">
-
-  <div class="today-row">
-    <span>Produzione FV</span>
-    <strong id="produzioneKwh">—</strong>
-  </div>
-
-  <div class="today-row">
-    <span>Consumo casa</span>
+  <div class="energy-row">
+    <span>Consumo</span>
     <strong id="consumoKwh">—</strong>
   </div>
 
-  <div class="today-row">
-    <span>Immesso in rete</span>
+  <div class="energy-row">
+    <span>Immissione</span>
     <strong id="immessoKwh">—</strong>
   </div>
 
-  <div class="today-row">
-    <span>Prelevato dalla rete</span>
+  <div class="energy-row">
+    <span>Prelievo</span>
     <strong id="prelevatoKwh">—</strong>
   </div>
-
 </section>
 
+<section class="home-card savings-card">
+  <div class="home-card-title">💰 Risparmio</div>
 
-<section class="section-title">
-  Produzione mensile
-</section>
+  <div class="savings-grid">
+    <div class="saving-item">
+      <div class="saving-name">Oggi</div>
+      <strong id="risparmioOggi">—</strong>
+    </div>
 
+    <div class="saving-item">
+      <div class="saving-name">Questo mese</div>
+      <strong id="risparmioMese">—</strong>
+    </div>
 
-<section class="monthly" id="monthlyData">
-
-  <div class="monthly-empty">
-    Caricamento…
+    <div class="saving-item">
+      <div class="saving-name">Cumulato</div>
+      <strong id="risparmioCumulato">—</strong>
+    </div>
   </div>
-
 </section>
 
+<div id="status" class="status">Connessione in corso…</div>
 
-<section class="section-title">
-  Confronto Nufri
-</section>
-
-
-<section class="nufri" id="nufriData">
-
-  <div class="nufri-empty">
-    Caricamento…
-  </div>
-
-</section>
-
-
-<button
-  id="nufriToggle"
-  class="nufri-toggle"
-  type="button"
-  hidden
->
-  Mostra mesi precedenti
-</button>
-
-
-<section class="section-title">
-  Risparmio economico
-</section>
-
-
-<section class="savings" id="savingsData">
-
-  <div class="savings-empty">
-    Caricamento…
-  </div>
-
-</section>
-
-
-<button
-  id="savingsToggle"
-  class="savings-toggle"
-  type="button"
-  hidden
->
-  Mostra mesi precedenti
-</button>
-
+<nav class="bottom-nav" aria-label="Navigazione principale">
+  <button class="nav-item active" type="button" aria-label="Oggi">
+    <span>🏠</span>
+    <small>Oggi</small>
+  </button>
+  <button class="nav-item" type="button" aria-label="Storico">
+    <span>📊</span>
+    <small>Storico</small>
+  </button>
+  <button class="nav-item" type="button" aria-label="Risparmio">
+    <span>💰</span>
+    <small>Risparmio</small>
+  </button>
+  <button class="nav-item" type="button" aria-label="Impostazioni">
+    <span>⚙️</span>
+    <small>Impostazioni</small>
+  </button>
+</nav>
 
 <footer>
-
-  <span>
-    Ultimo aggiornamento
-  </span>
-
-  <strong id="lastUpdate">
-    —
-  </strong>
-
+  <span>Ultimo aggiornamento</span>
+  <strong id="lastUpdate">—</strong>
 </footer>
-
 
 </main>
 
-
 <script src="app.js"></script>
-
 </body>
 </html>
