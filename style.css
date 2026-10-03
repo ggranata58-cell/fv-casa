@@ -285,7 +285,7 @@ button{font:inherit}
   white-space:nowrap;
 }
 
-.breakdown-total{
+ .breakdown-total{
   display:grid;
   grid-template-columns:minmax(0,1fr) auto;
   align-items:center;
@@ -301,8 +301,8 @@ button{font:inherit}
 
 .breakdown-total strong{
   text-align:right;
-  font-size:14px;
-  font-weight:750;
+  font-size:12px;
+  font-weight:650;
   white-space:nowrap;
 }
 
