@@ -262,17 +262,23 @@ function renderSavingsPage(){
 
   const energyMonth=storicoData.find(row=>corrente&&String(row.mese)===String(corrente.mese));
   const breakdown=$("savingsBreakdown");
-  if(energyMonth){
-    const produzione=Number(energyMonth.produzione_fv_kwh)||0;
-    const immesso=Number(energyMonth.immesso_rete_kwh)||0;
-    const autoconsumo=Math.max(0,produzione-immesso);
-    const valoreAutoconsumo=Math.round(autoconsumo*0.154852*100)/100;
-    const valoreImmissione=Math.round(immesso*0.06*100)/100;
-    const totale=valoreAutoconsumo+valoreImmissione;
+  if(corrente){
+    const meseRisparmio=formatMonth(corrente.mese);
+    const costoSenza=Number(corrente.costo_senza_fv)||0;
+    const costoCon=Number(corrente.costo_con_fv)||0;
+    const risparmio=Number(corrente.risparmio_fv)||0;
+    const produzione=energyMonth?Number(energyMonth.produzione_fv_kwh)||0:0;
+    const immesso=energyMonth?Number(energyMonth.immesso_rete_kwh)||0:0;
+
     breakdown.innerHTML=
-      '<div class="breakdown-row"><span>Energia autoconsumata</span><strong>'+formatKwh(autoconsumo)+'</strong><em>'+formatEuro(valoreAutoconsumo)+'</em></div>'+
-      '<div class="breakdown-row"><span>Energia immessa in rete</span><strong>'+formatKwh(immesso)+'</strong><em>'+formatEuro(valoreImmissione)+'</em></div>'+
-      '<div class="breakdown-total"><span>Totale risparmio FV</span><strong>'+formatEuro(totale)+'</strong></div>';
+      '<div class="breakdown-month">'+meseRisparmio+' — ultimo mese disponibile</div>'+
+      '<div class="breakdown-row"><span>Costo senza impianto FV</span><strong></strong><em>'+formatEuro(costoSenza)+'</em></div>'+
+      '<div class="breakdown-row"><span>Costo effettivo con impianto FV</span><strong></strong><em>'+formatEuro(costoCon)+'</em></div>'+
+      '<div class="breakdown-total"><span>Risparmio FV</span><strong></strong><em>'+formatEuro(risparmio)+'</em></div>'+
+      '<div class="breakdown-note">Il risparmio è la differenza tra il costo teorico senza FV e l’importo effettivo della fattura.</div>'+
+      (energyMonth?
+        '<div class="breakdown-energy"><span>Dati energetici del mese</span><span>Produzione FV '+formatKwh(produzione)+' · Immessa in rete '+formatKwh(immesso)+'</span></div>'
+        :'');
   }
 }
 
