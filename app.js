@@ -274,7 +274,7 @@ function renderSavingsPage(){
       '<div class="breakdown-month">'+meseRisparmio+' — ultimo mese disponibile</div>'+
       '<div class="breakdown-row"><span>Costo senza impianto FV</span><strong></strong><em>'+formatEuro(costoSenza)+'</em></div>'+
       '<div class="breakdown-row"><span>Costo effettivo con impianto FV</span><strong></strong><em>'+formatEuro(costoCon)+'</em></div>'+
-      '<div class="breakdown-total"><span>Risparmio FV</span><strong></strong><em>'+formatEuro(risparmio)+'</em></div>';
+      '<div class="breakdown-total"><span>Risparmio FV</span><strong></strong><strong>'+formatEuro(risparmio)+'</strong></div>';
   }
 }
 
