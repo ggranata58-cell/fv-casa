@@ -313,10 +313,17 @@ button{font:inherit}
 
  .breakdown-total{
   display:grid;
-  grid-template-columns:minmax(0,1fr) auto;
+  grid-template-columns:minmax(0,1fr) max-content max-content;
   align-items:center;
-  gap:12px;
+  column-gap:16px;
   padding-top:13px;
+}
+
+.breakdown-total strong:last-child{
+  text-align:right;
+  font-size:12px;
+  font-weight:750;
+  white-space:nowrap;
 }
 
 .breakdown-total span{
