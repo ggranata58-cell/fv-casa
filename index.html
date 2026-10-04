@@ -16,7 +16,7 @@
 <body>
 <main class="app">
 <section id="pageOggi" class="app-page">
-<header class="page-header"><h1>🏠 Oggi</h1><div id="todayDate" class="today-date">—</div></header>
+<header class="page-header page-header-with-action"><div><h1>🏠 Oggi</h1><div id="todayDate" class="today-date">—</div></div><button class="refresh-button" type="button" onclick="loadData()" aria-label="Aggiorna dati" title="Aggiorna dati">↻</button></header>
 <section class="home-card production-card"><div class="home-card-title">☀️ Produzione</div><div class="production-value"><span id="produzioneKwh">—</span><small>kWh</small></div></section>
 <section class="home-card energy-card"><div class="home-card-title">⚡ Energia</div><div class="energy-row"><span>Consumo</span><strong id="consumoKwh">—</strong></div><div class="energy-row"><span>Immissione</span><strong id="immessoKwh">—</strong></div><div class="energy-row"><span>Prelievo</span><strong id="prelevatoKwh">—</strong></div></section>
 <section class="home-card savings-card"><div class="home-card-title">💰 Risparmio</div><div class="savings-grid"><div class="saving-item"><div class="saving-name">Oggi</div><strong id="risparmioOggi">—</strong></div><div class="saving-item"><div class="saving-name">Ultimo mese disponibile</div><strong id="risparmioMese">—</strong></div><div class="saving-item"><div class="saving-name">Risultato economico netto</div><strong id="risparmioCumulato">—</strong></div></div></section>
@@ -46,12 +46,12 @@
 <div id="status" class="status">Connessione in corso…</div>
 <nav class="bottom-nav" aria-label="Navigazione principale">
 <button class="nav-item active" type="button" data-page="Oggi" aria-label="Oggi" onclick="showPage('Oggi')"><span>🏠</span><small>Oggi</small></button>
-<button class="nav-item" type="button" data-page="Storico" aria-label="Storico" onclick="showPage('Storico')"><span>📊</span><small>Storico</small></button>
 <button class="nav-item" type="button" data-page="Risparmio" aria-label="Risparmio" onclick="showPage('Risparmio')"><span>💰</span><small>Risparmio</small></button>
+<button class="nav-item" type="button" data-page="Storico" aria-label="Storico" onclick="showPage('Storico')"><span>📊</span><small>Storico</small></button>
 <button class="nav-item" type="button" data-page="Impostazioni" aria-label="Impostazioni" onclick="showPage('Impostazioni')"><span>⚙️</span><small>Impostazioni</small></button>
 </nav>
 <footer><span>Ultimo aggiornamento</span><strong id="lastUpdate">—</strong></footer>
 </main>
-<script>function showPage(page){setPage(page);}</script><script src="app.js?v=12"></script>
+<script>function showPage(page){setPage(page);}</script><script src="app.js?v=13"></script>
 </body>
 </html>
