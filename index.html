@@ -14,151 +14,44 @@
 <title>FV Casa</title>
 </head>
 <body>
-
 <main class="app">
-
 <section id="pageOggi" class="app-page">
-<header class="page-header">
-  <h1>🏠 Oggi</h1>
-  <div id="todayDate" class="today-date">—</div>
-</header>
-
-<section class="home-card production-card">
-  <div class="home-card-title">☀️ Produzione</div>
-  <div class="production-value">
-    <span id="produzioneKwh">—</span>
-    <small>kWh</small>
-  </div>
+<header class="page-header"><h1>🏠 Oggi</h1><div id="todayDate" class="today-date">—</div></header>
+<section class="home-card production-card"><div class="home-card-title">☀️ Produzione</div><div class="production-value"><span id="produzioneKwh">—</span><small>kWh</small></div></section>
+<section class="home-card energy-card"><div class="home-card-title">⚡ Energia</div><div class="energy-row"><span>Consumo</span><strong id="consumoKwh">—</strong></div><div class="energy-row"><span>Immissione</span><strong id="immessoKwh">—</strong></div><div class="energy-row"><span>Prelievo</span><strong id="prelevatoKwh">—</strong></div></section>
+<section class="home-card savings-card"><div class="home-card-title">💰 Risparmio</div><div class="savings-grid"><div class="saving-item"><div class="saving-name">Oggi</div><strong id="risparmioOggi">—</strong></div><div class="saving-item"><div class="saving-name">Ultimo mese disponibile</div><strong id="risparmioMese">—</strong></div><div class="saving-item"><div class="saving-name">Cumulato</div><strong id="risparmioCumulato">—</strong></div></div></section>
 </section>
-
-<section class="home-card energy-card">
-  <div class="home-card-title">⚡ Energia</div>
-  <div class="energy-row"><span>Consumo</span><strong id="consumoKwh">—</strong></div>
-  <div class="energy-row"><span>Immissione</span><strong id="immessoKwh">—</strong></div>
-  <div class="energy-row"><span>Prelievo</span><strong id="prelevatoKwh">—</strong></div>
-</section>
-
-<section class="home-card savings-card">
-  <div class="home-card-title">💰 Risparmio</div>
-  <div class="savings-grid">
-    <div class="saving-item"><div class="saving-name">Oggi</div><strong id="risparmioOggi">—</strong></div>
-    <div class="saving-item"><div class="saving-name">Ultimo mese disponibile</div><strong id="risparmioMese">—</strong></div>
-    <div class="saving-item"><div class="saving-name">Cumulato</div><strong id="risparmioCumulato">—</strong></div>
-  </div>
-</section>
-</section>
-
 <section id="pageStorico" class="app-page" hidden>
-<header class="page-header">
-  <h1>📊 Storico</h1>
-  <div class="page-subtitle">Andamento della tua energia nel tempo</div>
-</header>
-
+<header class="page-header"><h1>📊 Storico</h1><div class="page-subtitle">Andamento della tua energia nel tempo</div></header>
 <div class="period-selector" role="group" aria-label="Periodo">
-  <button class="period-button active" type="button" data-period="giorno">Giorno</button>
-  <button class="period-button" type="button" data-period="mese">Mese</button>
-  <button class="period-button" type="button" data-period="anno">Anno</button>
+<button class="period-button active" type="button" data-period="mese">Mese</button>
+<button class="period-button" type="button" data-period="anno">Anno</button>
 </div>
-
-<section class="history-card production-history">
-  <div class="history-title">☀️ Produzione</div>
-  <div id="productionChart" class="chart-area">
-    <div class="chart-empty">Nessun dato storico disponibile</div>
-  </div>
+<section class="history-card production-history"><div class="history-title">☀️ Produzione</div><div id="productionChart" class="chart-area"><div class="chart-empty">Nessun dato storico disponibile</div></div></section>
+<section class="history-card energy-history"><div class="history-title">⚡ Energia</div><div id="energyChart" class="chart-area"><div class="chart-empty">Nessun dato storico disponibile</div></div></section>
+<section class="history-card savings-history"><div class="history-title">💰 Risparmio</div><div id="savingsChart" class="chart-area"><div class="chart-empty">Nessun dato storico disponibile</div></div></section>
 </section>
-
-<section class="history-card energy-history">
-  <div class="history-title">⚡ Energia</div>
-  <div id="energyChart" class="chart-area">
-    <div class="chart-empty">Nessun dato storico disponibile</div>
-  </div>
-</section>
-
-<section class="history-card savings-history">
-  <div class="history-title">💰 Risparmio</div>
-  <div id="savingsChart" class="chart-area">
-    <div class="chart-empty">Nessun dato storico disponibile</div>
-  </div>
-</section>
-</section>
-
 <section id="pageRisparmio" class="app-page" hidden>
-<header class="page-header">
-  <h1>💰 Risparmio</h1>
-  <div class="page-subtitle">Quanto ti fa risparmiare il tuo impianto fotovoltaico</div>
-</header>
-
-<section class="home-card savings-card">
-  <div class="home-card-title">Risparmio</div>
-  <div class="savings-grid">
-    <div class="saving-item"><div class="saving-name">Oggi</div><strong id="pageRisparmioOggi">—</strong></div>
-    <div class="saving-item"><div class="saving-name">Ultimo mese disponibile</div><strong id="pageRisparmioMese">—</strong></div>
-    <div class="saving-item"><div class="saving-name">Cumulato</div><strong id="pageRisparmioCumulato">—</strong></div>
-  </div>
+<header class="page-header"><h1>💰 Risparmio</h1><div class="page-subtitle">Quanto ti fa risparmiare il tuo impianto fotovoltaico</div></header>
+<section class="home-card savings-card"><div class="home-card-title">Risparmio</div><div class="savings-grid"><div class="saving-item"><div class="saving-name">Oggi</div><strong id="pageRisparmioOggi">—</strong></div><div class="saving-item"><div class="saving-name">Ultimo mese disponibile</div><strong id="pageRisparmioMese">—</strong></div><div class="saving-item"><div class="saving-name">Cumulato</div><strong id="pageRisparmioCumulato">—</strong></div></div></section>
+<section class="history-card savings-history"><div class="history-title">📈 Andamento del risparmio</div><div id="savingsTrend" class="chart-area"><div class="chart-empty">Nessun dato disponibile</div></div></section>
+<section class="history-card energy-history"><div class="history-title">🔎 Da dove nasce il risparmio</div><div id="savingsBreakdown" class="breakdown-list"><div class="chart-empty">Nessun dato disponibile</div></div></section>
 </section>
-
-<section class="history-card savings-history">
-  <div class="history-title">📈 Andamento del risparmio</div>
-  <div id="savingsTrend" class="chart-area">
-    <div class="chart-empty">Nessun dato disponibile</div>
-  </div>
-</section>
-
-<section class="history-card energy-history">
-  <div class="history-title">🔎 Da dove nasce il risparmio</div>
-  <div id="savingsBreakdown" class="breakdown-list">
-    <div class="chart-empty">Nessun dato disponibile</div>
-  </div>
-</section>
-</section>
-
 <section id="pageImpostazioni" class="app-page" hidden>
-<header class="page-header">
-  <h1>⚙️ Impostazioni</h1>
-  <div class="page-subtitle">Parametri e collegamenti dell'app</div>
-</header>
-
-<section class="settings-card">
-  <div class="settings-title">💶 Parametri economici</div>
-  <div class="settings-help">I valori hanno una data di decorrenza. Le variazioni precedenti vengono conservate per mantenere corretti i dati storici.</div>
-  <div id="economicSettings" class="settings-list"></div>
-  <button id="settingsReset" class="settings-secondary" type="button">Ripristina valori iniziali</button>
+<header class="page-header"><h1>⚙️ Impostazioni</h1><div class="page-subtitle">Parametri e collegamenti dell'app</div></header>
+<section class="settings-card"><div class="settings-title">💶 Parametri economici</div><div class="settings-help">I valori hanno una data di decorrenza. Le variazioni precedenti vengono conservate per mantenere corretti i dati storici.</div><div id="economicSettings" class="settings-list"></div><button id="settingsReset" class="settings-secondary" type="button">Ripristina valori iniziali</button></section>
+<section class="settings-card"><div class="settings-title">🔄 Dati e sincronizzazione</div><div class="settings-list"><div class="settings-row"><span>Ultimo aggiornamento dati</span><strong id="settingsLastUpdate">—</strong></div><button id="settingsSync" class="settings-action" type="button">Sincronizza dati</button></div></section>
+<section class="settings-card"><div class="settings-title">ℹ️ Informazioni app</div><div class="settings-list"><div class="settings-row"><span>Nome</span><strong>FV Casa</strong></div><div class="settings-row"><span>Versione</span><strong>1.0</strong></div><div class="settings-row"><span>Ultimo aggiornamento</span><strong>03/10/2026</strong></div></div></section>
 </section>
-
-<section class="settings-card">
-  <div class="settings-title">🔄 Dati e sincronizzazione</div>
-  <div class="settings-list">
-    <div class="settings-row"><span>Ultimo aggiornamento dati</span><strong id="settingsLastUpdate">—</strong></div>
-    <button id="settingsSync" class="settings-action" type="button">Sincronizza dati</button>
-  </div>
-</section>
-
-<section class="settings-card">
-  <div class="settings-title">ℹ️ Informazioni app</div>
-  <div class="settings-list">
-    <div class="settings-row"><span>Nome</span><strong>FV Casa</strong></div>
-    <div class="settings-row"><span>Versione</span><strong>1.0</strong></div>
-    <div class="settings-row"><span>Ultimo aggiornamento</span><strong>03/10/2026</strong></div>
-  </div>
-</section>
-</section>
-
 <div id="status" class="status">Connessione in corso…</div>
-
 <nav class="bottom-nav" aria-label="Navigazione principale">
-  <button class="nav-item active" type="button" data-page="Oggi" aria-label="Oggi" onclick="showPage('Oggi')"><span>🏠</span><small>Oggi</small></button>
-  <button class="nav-item" type="button" data-page="Storico" aria-label="Storico" onclick="showPage('Storico')"><span>📊</span><small>Storico</small></button>
-  <button class="nav-item" type="button" data-page="Risparmio" aria-label="Risparmio" onclick="showPage('Risparmio')"><span>💰</span><small>Risparmio</small></button>
-  <button class="nav-item" type="button" data-page="Impostazioni" aria-label="Impostazioni" onclick="showPage('Impostazioni')"><span>⚙️</span><small>Impostazioni</small></button>
+<button class="nav-item active" type="button" data-page="Oggi" aria-label="Oggi" onclick="showPage('Oggi')"><span>🏠</span><small>Oggi</small></button>
+<button class="nav-item" type="button" data-page="Storico" aria-label="Storico" onclick="showPage('Storico')"><span>📊</span><small>Storico</small></button>
+<button class="nav-item" type="button" data-page="Risparmio" aria-label="Risparmio" onclick="showPage('Risparmio')"><span>💰</span><small>Risparmio</small></button>
+<button class="nav-item" type="button" data-page="Impostazioni" aria-label="Impostazioni" onclick="showPage('Impostazioni')"><span>⚙️</span><small>Impostazioni</small></button>
 </nav>
-
-<footer>
-  <span>Ultimo aggiornamento</span>
-  <strong id="lastUpdate">—</strong>
-</footer>
-
+<footer><span>Ultimo aggiornamento</span><strong id="lastUpdate">—</strong></footer>
 </main>
-
 <script>function showPage(page){setPage(page);}</script><script src="app.js?v=10"></script>
 </body>
 </html>
