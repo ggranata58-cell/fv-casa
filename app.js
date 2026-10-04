@@ -26,6 +26,56 @@ function formatParameterValue(parameter,entry){const unit=entry.unit!==undefined
 function formatParameterDate(date){if(!date)return "—";const parts=String(date).split("-");return parts.length===3?parts[2]+"/"+parts[1]+"/"+parts[0]:date;}
 function sortParameterValues(parameter){parameter.values.sort((a,b)=>String(a.date).localeCompare(String(b.date)));}
 function getParameterEntry(id,date=new Date()){const parameter=economicParameters.find(item=>item.id===id);if(!parameter||!Array.isArray(parameter.values))return null;const target=date instanceof Date?date.toISOString().slice(0,10):String(date);const valid=parameter.values.filter(item=>item.date&&item.date<=target).sort((a,b)=>String(a.date).localeCompare(String(b.date)));return valid.length?valid[valid.length-1]:null;}
+
+function renderSettings(){
+  const lastUpdate=$("lastUpdate")?.textContent||"—";
+  $("settingsLastUpdate").textContent=lastUpdate;
+  const container=$("economicSettings");
+  if(!container)return;
+  container.innerHTML=economicParameters.map(function(parameter){
+    sortParameterValues(parameter);
+    const current=parameter.values[parameter.values.length-1];
+    const count=parameter.values.length;
+    const history=parameter.values.map(function(entry,index){
+      return "<div class=\"settings-history-row\"><span>"+formatParameterDate(entry.date)+"</span><strong>"+formatParameterValue(parameter,entry)+"</strong><button class=\"settings-edit\" type=\"button\" data-action=\"edit\" data-index=\""+index+"\">Modifica</button></div>";
+    }).join("");
+    return "<div class=\"settings-parameter\" data-parameter=\""+parameter.id+"\"><div class=\"settings-current\"><span class=\"settings-current-name\">"+parameter.name+"</span><strong class=\"settings-current-value\">"+formatParameterValue(parameter,current)+"</strong><small class=\"settings-current-date\">Dal "+formatParameterDate(current.date)+"</small></div><button class=\"settings-history-toggle\" type=\"button\" data-action=\"history\">"+(count>1?"Storico ("+count+")":"Modifica valore")+"</button><div class=\"settings-history\">"+history+"<button class=\"settings-add\" type=\"button\" data-action=\"add\">+ Aggiungi variazione</button><div class=\"settings-editor\" hidden></div></div></div>";
+  }).join("");
+  container.querySelectorAll("[data-action=history]").forEach(function(button){
+    button.addEventListener("click",function(){button.parentElement.querySelector(".settings-history").classList.toggle("open");});
+  });
+  container.querySelectorAll("[data-action=edit]").forEach(function(button){
+    button.addEventListener("click",function(){
+      const parameter=economicParameters.find(function(item){return item.id===button.closest(".settings-parameter").dataset.parameter;});
+      openParameterEditor(parameter,Number(button.dataset.index),button.closest(".settings-history"));
+    });
+  });
+  container.querySelectorAll("[data-action=add]").forEach(function(button){
+    button.addEventListener("click",function(){
+      const parameter=economicParameters.find(function(item){return item.id===button.closest(".settings-parameter").dataset.parameter;});
+      openParameterEditor(parameter,-1,button.closest(".settings-history"));
+    });
+  });
+}
+function openParameterEditor(parameter,index,history){
+  const editor=history.querySelector(".settings-editor");
+  const entry=index>=0?parameter.values[index]:{date:"",value:"",unit:parameter.unit};
+  editor.hidden=false;
+  editor.innerHTML="<label>Decorrenza<input type=\"date\" id=\"settingsEditDate\" value=\""+(entry.date||"")+"\"></label><label>Valore<input type=\"number\" step=\"any\" id=\"settingsEditValue\" value=\""+(entry.value!==undefined?entry.value:"")+"\"></label>"+(parameter.id==="imposta_elettrica"?"<label>Unità<input type=\"text\" id=\"settingsEditUnit\" value=\""+(entry.unit||"")+"\"></label>":"<input type=\"hidden\" id=\"settingsEditUnit\" value=\""+(entry.unit||parameter.unit)+"\">")+"<div class=\"settings-editor-actions\"><button type=\"button\" class=\"settings-save\">Salva</button><button type=\"button\" class=\"settings-cancel\">Annulla</button></div>";
+  editor.querySelector(".settings-save").addEventListener("click",function(){
+    const date=editor.querySelector("#settingsEditDate").value;
+    const value=Number(editor.querySelector("#settingsEditValue").value);
+    const unit=editor.querySelector("#settingsEditUnit").value;
+    if(!date||!Number.isFinite(value)){alert("Inserisci una data e un valore validi.");return;}
+    const newEntry={date:date,value:value,unit:unit||parameter.unit};
+    if(index>=0)parameter.values[index]=newEntry;else parameter.values.push(newEntry);
+    sortParameterValues(parameter);
+    saveEconomicParameters();
+    renderSettings();
+    renderSavingsPage();
+  });
+  editor.querySelector(".settings-cancel").addEventListener("click",function(){editor.hidden=true;});
+}
 function renderMonthly(data){}
 function renderNufri(data){}
 function renderSavings(data){}
