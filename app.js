@@ -272,7 +272,12 @@ function renderSavingsPage(){
     $("risparmioMese").previousElementSibling.textContent="Ultimo mese disponibile: "+meseDisponibile;
     $("pageRisparmioMese").previousElementSibling.textContent="Ultimo mese disponibile: "+meseDisponibile;
     $("pageRisparmioMese").textContent=formatEuro(corrente.risparmio_fv);
-    $("pageRisparmioCumulato").textContent=formatEuro(corrente.risparmio_netto_cumulato);
+    const risparmioFvCumulato=risparmioData.reduce((totale,row)=>totale+(Number(row.risparmio_fv)||0),0);
+    const risultatoNetto=Number(corrente.risparmio_netto_cumulato)||0;
+    const rateFinanziamento=risparmioFvCumulato-risultatoNetto;
+    $("pageRisparmioCumulato").textContent=formatEuro(risparmioFvCumulato);
+    $("pageRisparmioRate").textContent=formatEuro(rateFinanziamento);
+    $("pageRisparmioNetto").textContent=formatEuro(risultatoNetto);
   }
 
   const trend=[...risparmioData].sort((a,b)=>new Date(a.mese+"T00:00:00")-new Date(b.mese+"T00:00:00"));
