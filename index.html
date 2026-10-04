@@ -120,16 +120,9 @@
 
 <section class="settings-card">
   <div class="settings-title">💶 Parametri economici</div>
-  <div class="settings-list">
-    <div class="settings-row"><span>Prezzo energia acquistata</span><strong>0,154852 €/kWh</strong><small>Dal 01/02/2026</small></div>
-    <div class="settings-row"><span>Prezzo energia immessa</span><strong>0,060000 €/kWh</strong><small>Dal 01/02/2026</small></div>
-    <div class="settings-row"><span>Imposta elettrica</span><strong>0,001 €/kWh</strong><small>Dal 01/03/2026</small></div>
-    <div class="settings-row"><span>IVA</span><strong>10%</strong><small>Dal 01/03/2026</small></div>
-    <div class="settings-row"><span>Quota potenza P1</span><strong>0,078179 €/kW/giorno</strong><small>Valore attuale</small></div>
-    <div class="settings-row"><span>Quota potenza P3</span><strong>0,002047 €/kW/giorno</strong><small>Valore attuale</small></div>
-    <div class="settings-row"><span>Bono Social</span><strong>0,77 €/mese</strong><small>Ultimo valore noto</small></div>
-    <div class="settings-row"><span>Alquiler contador</span><strong>0,83 €/mese</strong><small>Ultimo valore noto</small></div>
-  </div>
+  <div class="settings-help">I valori hanno una data di decorrenza. Le variazioni precedenti vengono conservate per mantenere corretti i dati storici.</div>
+  <div id="economicSettings" class="settings-list"></div>
+  <button id="settingsReset" class="settings-secondary" type="button">Ripristina valori iniziali</button>
 </section>
 
 <section class="settings-card">
@@ -166,6 +159,6 @@
 
 </main>
 
-<script>function showPage(page){setPage(page);}</script><script src="app.js?v=9"></script>
+<script>function showPage(page){setPage(page);}</script><script src="app.js?v=10"></script>
 </body>
 </html>
