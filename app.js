@@ -329,7 +329,7 @@ function openParameterEditor(parameter,index,history){
     const newEntry={date:date,value:value,unit:unit||parameter.unit}; if(index>=0)parameter.values[index]=newEntry;else parameter.values.push(newEntry);
     sortParameterValues(parameter);saveEconomicParameters();renderSettings();renderSavingsPage();
   });
-  editor.querySelector(".settings-cancel").addEventListener("click",function(){editor.hidden=true;});
+  editor.querySelector(".settings-cancel").addEventListener("click",function(){editor.hidden=true;history.classList.remove("open");});
 }
 
 function renderMonthly(data){}
