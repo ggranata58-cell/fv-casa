@@ -27,55 +27,311 @@ function formatParameterDate(date){if(!date)return "—";const parts=String(date
 function sortParameterValues(parameter){parameter.values.sort((a,b)=>String(a.date).localeCompare(String(b.date)));}
 function getParameterEntry(id,date=new Date()){const parameter=economicParameters.find(item=>item.id===id);if(!parameter||!Array.isArray(parameter.values))return null;const target=date instanceof Date?date.toISOString().slice(0,10):String(date);const valid=parameter.values.filter(item=>item.date&&item.date<=target).sort((a,b)=>String(a.date).localeCompare(String(b.date)));return valid.length?valid[valid.length-1]:null;}
 
+
+function formatNumber(value,decimals=3){
+  const n=Number(value);
+  if(!Number.isFinite(n)) return "—";
+  return n.toLocaleString("it-IT",{minimumFractionDigits:decimals,maximumFractionDigits:decimals});
+}
+
+function formatKwh(value){
+  return Number.isFinite(Number(value)) ? formatNumber(value,1)+" kWh" : "—";
+}
+
+function formatEuro(value){
+  return Number.isFinite(Number(value))
+    ? Number(value).toLocaleString("it-IT",{minimumFractionDigits:2,maximumFractionDigits:2})+" €"
+    : "—";
+}
+
+function formatMonth(value){
+  if(!value) return "—";
+  const d=new Date(value+"T00:00:00");
+  if(Number.isNaN(d.getTime())) return value;
+  return d.toLocaleDateString("it-IT",{month:"long",year:"numeric"});
+}
+
+function formatTime(iso){
+  if(!iso) return "—";
+  const d=new Date(iso);
+  if(Number.isNaN(d.getTime())) return iso;
+  return d.toLocaleTimeString("it-IT",{hour:"2-digit",minute:"2-digit",second:"2-digit"});
+}
+
+function setTodayDate(){
+  const today=new Date();
+  const text=today.toLocaleDateString("it-IT",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+  $("todayDate").textContent=text.charAt(0).toUpperCase()+text.slice(1);
+}
+
+function setPage(page){
+  const oggi=page==="Oggi";
+  const storico=page==="Storico";
+  const risparmio=page==="Risparmio";
+  const impostazioni=page==="Impostazioni";
+  $("pageOggi").hidden=!oggi;
+  $("pageStorico").hidden=!storico;
+  $("pageRisparmio").hidden=!risparmio;
+  $("pageImpostazioni").hidden=!impostazioni;
+  document.querySelectorAll(".nav-item").forEach(button=>{
+    button.classList.toggle("active",button.dataset.page===page);
+  });
+  if(storico) renderHistory(storicoPeriodo);
+  if(risparmio) renderSavingsPage();
+  if(impostazioni) renderSettings();
+}
+
+function createChart(containerId,rows,series,titleSuffix,formatter=formatNumber){
+  const container=$(containerId);
+  if(!Array.isArray(rows)||rows.length===0){
+    container.innerHTML='<div class="chart-empty">Nessun dato storico disponibile</div>';
+    return;
+  }
+  const valid=rows.filter(row=>Number.isFinite(Number(row.value)));
+  if(!valid.length){
+    container.innerHTML='<div class="chart-empty">Nessun dato storico disponibile</div>';
+    return;
+  }
+  const max=Math.max(...valid.map(row=>Number(row.value)),0);
+  container.innerHTML=valid.map(row=>{
+    const value=Number(row.value);
+    const width=max>0 ? Math.max(3,(value/max)*100) : 3;
+    return `
+      <div class="chart-row">
+        <span class="chart-label">${row.label}</span>
+        <div class="chart-track"><div class="chart-bar ${series}" style="width:${width}%"></div></div>
+        <strong class="chart-value">${formatter(value)}</strong>
+      </div>
+    `;
+  }).join("");
+  container.dataset.title=titleSuffix;
+}
+
+function getHistoryRows(){
+  if(storicoPeriodo==="giorno") return [];
+  if(!Array.isArray(storicoData)) return [];
+
+  if(storicoPeriodo==="anno"){
+    const grouped={};
+
+    storicoData.forEach(row=>{
+      if(!row.mese) return;
+      const year=String(row.mese).slice(0,4);
+      if(!/^\d{4}$/.test(year)) return;
+
+      if(!grouped[year]){
+        grouped[year]={produzione:0,consumo:0,immesso:0,prelevato:0};
+      }
+
+      grouped[year].produzione+=Number(row.produzione_fv_kwh)||0;
+      grouped[year].consumo+=Number(row.consumo_casa_kwh)||0;
+      grouped[year].immesso+=Number(row.immesso_rete_kwh)||0;
+      grouped[year].prelevato+=Number(row.prelevato_rete_kwh)||0;
+    });
+
+    return Object.entries(grouped)
+      .sort((a,b)=>a[0].localeCompare(b[0]))
+      .map(([label,v])=>({label,...v}));
+  }
+
+  return [...storicoData]
+    .sort((a,b)=>new Date(a.mese+"T00:00:00")-new Date(b.mese+"T00:00:00"))
+    .map(row=>({
+      label:formatMonth(row.mese),
+      produzione:Number(row.produzione_fv_kwh)||0,
+      consumo:Number(row.consumo_casa_kwh)||0,
+      immesso:Number(row.immesso_rete_kwh)||0,
+      prelevato:Number(row.prelevato_rete_kwh)||0
+    }));
+}
+
+function getSavingsRows(){
+  if(storicoPeriodo==="giorno") return [];
+  if(!Array.isArray(risparmioData)) return [];
+
+  if(storicoPeriodo==="anno"){
+    const grouped={};
+
+    risparmioData.forEach(row=>{
+      if(!row.mese) return;
+      const year=String(row.mese).slice(0,4);
+      if(!/^\d{4}$/.test(year)) return;
+
+      if(!grouped[year]){
+        grouped[year]={
+          risparmio_fv:0,
+          risparmio_netto:0,
+          risparmio_netto_cumulato:0,
+          ultimo_mese:""
+        };
+      }
+
+      grouped[year].risparmio_fv+=Number(row.risparmio_fv)||0;
+      grouped[year].risparmio_netto+=Number(row.risparmio_netto)||0;
+
+      if(!grouped[year].ultimo_mese || String(row.mese)>grouped[year].ultimo_mese){
+        grouped[year].ultimo_mese=String(row.mese);
+        grouped[year].risparmio_netto_cumulato=Number(row.risparmio_netto_cumulato)||0;
+      }
+    });
+
+    return Object.entries(grouped)
+      .sort((a,b)=>a[0].localeCompare(b[0]))
+      .map(([label,v])=>({label,...v}));
+  }
+
+  return [...risparmioData]
+    .sort((a,b)=>new Date(a.mese+"T00:00:00")-new Date(b.mese+"T00:00:00"))
+    .map(row=>({
+      label:formatMonth(row.mese),
+      risparmio_fv:Number(row.risparmio_fv)||0,
+      risparmio_netto:Number(row.risparmio_netto)||0,
+      risparmio_netto_cumulato:Number(row.risparmio_netto_cumulato)||0
+    }));
+}
+
+function renderHistory(period=storicoPeriodo){
+  storicoPeriodo=period;
+  document.querySelectorAll(".period-button").forEach(button=>{
+    button.classList.toggle("active",button.dataset.period===period);
+  });
+
+  const noDailyMessage='<div class="chart-empty">Storico giornaliero non disponibile</div>';
+
+  if(period==="giorno"){
+    $("productionChart").innerHTML=noDailyMessage;
+    $("energyChart").innerHTML=noDailyMessage;
+    $("savingsChart").innerHTML=noDailyMessage;
+    return;
+  }
+
+  const rows=getHistoryRows();
+
+  createChart("productionChart",rows.map(row=>({label:row.label,value:row.produzione})),"chart-production","Produzione",formatKwh);
+
+  const energyContainer=$("energyChart");
+
+  if(rows.length){
+    const max=Math.max(...rows.map(item=>Math.max(item.consumo,item.immesso,item.prelevato)),0);
+
+    const makeBar=(value,className)=>`
+      <div class="energy-chart-item">
+        <span class="energy-chart-name">${className==="consumo"?"Consumo":className==="immesso"?"Immissione":"Prelievo"}</span>
+        <div class="chart-track"><div class="chart-bar ${className}" style="width:${max>0?Math.max(3,(value/max)*100):3}%"></div></div>
+        <strong>${formatKwh(value)}</strong>
+      </div>`;
+
+    energyContainer.innerHTML=rows.map(row=>`
+      <div class="chart-group">
+        <div class="chart-label chart-group-label">${row.label}</div>
+        ${makeBar(row.consumo,"consumo")}
+        ${makeBar(row.immesso,"immesso")}
+        ${makeBar(row.prelevato,"prelevato")}
+      </div>
+    `).join("");
+  }else{
+    energyContainer.innerHTML='<div class="chart-empty">Nessun dato storico disponibile</div>';
+  }
+
+  const savingsRows=getSavingsRows();
+
+  if(savingsRows.length){
+    const values=savingsRows.map(row=>Number(row.risparmio_fv)||0);
+    const max=Math.max(...values,0);
+
+    $("savingsChart").innerHTML=savingsRows.map(row=>{
+      const value=Number(row.risparmio_fv)||0;
+      const width=max>0 ? Math.max(3,(value/max)*100) : 3;
+
+      return `
+        <div class="chart-row">
+          <span class="chart-label">${row.label}</span>
+          <div class="chart-track"><div class="chart-bar savings" style="width:${width}%"></div></div>
+          <strong class="chart-value">${formatEuro(value)}</strong>
+        </div>
+      `;
+    }).join("");
+  }else{
+    $("savingsChart").innerHTML='<div class="chart-empty">Nessun dato storico disponibile</div>';
+  }
+}
+
+function renderSavingsPage(){
+  const produzioneOggi=Number($("produzioneKwh").textContent.replace(",", "."))||0;
+  const immessoOggi=Number($("immessoKwh").textContent.replace(",", "."))||0;
+  const autoconsumoOggi=Math.max(0,produzioneOggi-immessoOggi);
+  const prezzoAcquisto=getParameterEntry("energia_acquistata")?.value??0.154852;
+    const prezzoImmissione=getParameterEntry("energia_immessa")?.value??0.06;
+    const risparmioOggi=(autoconsumoOggi*prezzoAcquisto)+(immessoOggi*prezzoImmissione);
+
+  $("pageRisparmioOggi").textContent=formatEuro(risparmioOggi);
+
+  const corrente=risparmioData.length?risparmioData[0]:null;
+  if(corrente){
+    const meseDisponibile=formatMonth(corrente.mese);
+    $("risparmioMese").previousElementSibling.textContent="Ultimo mese disponibile: "+meseDisponibile;
+    $("pageRisparmioMese").previousElementSibling.textContent="Ultimo mese disponibile: "+meseDisponibile;
+    $("pageRisparmioMese").textContent=formatEuro(corrente.risparmio_fv);
+    $("pageRisparmioCumulato").textContent=formatEuro(corrente.risparmio_netto_cumulato);
+  }
+
+  const trend=[...risparmioData].sort((a,b)=>new Date(a.mese+"T00:00:00")-new Date(b.mese+"T00:00:00"));
+  const trendContainer=$("savingsTrend");
+  if(trend.length){
+    const max=Math.max(...trend.map(row=>Number(row.risparmio_fv)||0),0);
+    trendContainer.innerHTML=trend.map(row=>{
+      const value=Number(row.risparmio_fv)||0;
+      const width=max>0?Math.max(3,(value/max)*100):3;
+      return '<div class="chart-row"><span class="chart-label">'+formatMonth(row.mese)+'</span><div class="chart-track"><div class="chart-bar savings" style="width:'+width+'%"></div></div><strong class="chart-value">'+formatEuro(value)+'</strong></div>';
+    }).join("");
+  }
+
+  const energyMonth=storicoData.find(row=>corrente&&String(row.mese)===String(corrente.mese));
+  const breakdown=$("savingsBreakdown");
+  if(corrente){
+    const meseRisparmio=formatMonth(corrente.mese);
+    const costoSenza=Number(corrente.costo_senza_fv)||0;
+    const costoCon=Number(corrente.costo_con_fv)||0;
+    const risparmio=Number(corrente.risparmio_fv)||0;
+    const produzione=energyMonth?Number(energyMonth.produzione_fv_kwh)||0:0;
+    const immesso=energyMonth?Number(energyMonth.immesso_rete_kwh)||0:0;
+
+    breakdown.innerHTML=
+      '<div class="breakdown-month">'+meseRisparmio+' — ultimo mese disponibile</div>'+
+      '<div class="breakdown-row"><span>Costo senza impianto FV</span><strong></strong><em>'+formatEuro(costoSenza)+'</em></div>'+
+      '<div class="breakdown-row"><span>Costo effettivo con impianto FV</span><strong></strong><em>'+formatEuro(costoCon)+'</em></div>'+
+      '<div class="breakdown-total"><span>Risparmio FV</span><strong></strong><strong>'+formatEuro(risparmio)+'</strong></div>';
+  }
+}
+
+
 function renderSettings(){
   const lastUpdate=$("lastUpdate")?.textContent||"—";
   $("settingsLastUpdate").textContent=lastUpdate;
-  const container=$("economicSettings");
-  if(!container)return;
+  const container=$("economicSettings"); if(!container)return;
   container.innerHTML=economicParameters.map(function(parameter){
-    sortParameterValues(parameter);
-    const current=parameter.values[parameter.values.length-1];
-    const count=parameter.values.length;
+    sortParameterValues(parameter); const current=parameter.values[parameter.values.length-1]; const count=parameter.values.length;
     const history=parameter.values.map(function(entry,index){
-      return "<div class=\"settings-history-row\"><span>"+formatParameterDate(entry.date)+"</span><strong>"+formatParameterValue(parameter,entry)+"</strong><button class=\"settings-edit\" type=\"button\" data-action=\"edit\" data-index=\""+index+"\">Modifica</button></div>";
+      return '<div class="settings-history-row"><span>'+formatParameterDate(entry.date)+'</span><strong>'+formatParameterValue(parameter,entry)+'</strong><button class="settings-edit" type="button" data-action="edit" data-index="'+index+'">Modifica</button></div>';
     }).join("");
-    return "<div class=\"settings-parameter\" data-parameter=\""+parameter.id+"\"><div class=\"settings-current\"><span class=\"settings-current-name\">"+parameter.name+"</span><strong class=\"settings-current-value\">"+formatParameterValue(parameter,current)+"</strong><small class=\"settings-current-date\">Dal "+formatParameterDate(current.date)+"</small></div><button class=\"settings-history-toggle\" type=\"button\" data-action=\"history\">"+(count>1?"Storico ("+count+")":"Modifica valore")+"</button><div class=\"settings-history\">"+history+"<button class=\"settings-add\" type=\"button\" data-action=\"add\">+ Aggiungi variazione</button><div class=\"settings-editor\" hidden></div></div></div>";
+    return '<div class="settings-parameter" data-parameter="'+parameter.id+'"><div class="settings-current"><span class="settings-current-name">'+parameter.name+'</span><strong class="settings-current-value">'+formatParameterValue(parameter,current)+'</strong><small class="settings-current-date">Dal '+formatParameterDate(current.date)+'</small></div><button class="settings-history-toggle" type="button" data-action="history">'+(count>1?"Storico ("+count+")":"Modifica valore")+'</button><div class="settings-history">'+history+'<button class="settings-add" type="button" data-action="add">+ Aggiungi variazione</button><div class="settings-editor" hidden></div></div></div>';
   }).join("");
-  container.querySelectorAll("[data-action=history]").forEach(function(button){
-    button.addEventListener("click",function(){button.parentElement.querySelector(".settings-history").classList.toggle("open");});
-  });
-  container.querySelectorAll("[data-action=edit]").forEach(function(button){
-    button.addEventListener("click",function(){
-      const parameter=economicParameters.find(function(item){return item.id===button.closest(".settings-parameter").dataset.parameter;});
-      openParameterEditor(parameter,Number(button.dataset.index),button.closest(".settings-history"));
-    });
-  });
-  container.querySelectorAll("[data-action=add]").forEach(function(button){
-    button.addEventListener("click",function(){
-      const parameter=economicParameters.find(function(item){return item.id===button.closest(".settings-parameter").dataset.parameter;});
-      openParameterEditor(parameter,-1,button.closest(".settings-history"));
-    });
-  });
+  container.querySelectorAll("[data-action=history]").forEach(function(button){button.addEventListener("click",function(){button.parentElement.querySelector(".settings-history").classList.toggle("open");});});
+  container.querySelectorAll("[data-action=edit]").forEach(function(button){button.addEventListener("click",function(){const parameter=economicParameters.find(function(item){return item.id===button.closest(".settings-parameter").dataset.parameter;});openParameterEditor(parameter,Number(button.dataset.index),button.closest(".settings-history"));});});
+  container.querySelectorAll("[data-action=add]").forEach(function(button){button.addEventListener("click",function(){const parameter=economicParameters.find(function(item){return item.id===button.closest(".settings-parameter").dataset.parameter;});openParameterEditor(parameter,-1,button.closest(".settings-history"));});});
 }
 function openParameterEditor(parameter,index,history){
-  const editor=history.querySelector(".settings-editor");
-  const entry=index>=0?parameter.values[index]:{date:"",value:"",unit:parameter.unit};
-  editor.hidden=false;
-  editor.innerHTML="<label>Decorrenza<input type=\"date\" id=\"settingsEditDate\" value=\""+(entry.date||"")+"\"></label><label>Valore<input type=\"number\" step=\"any\" id=\"settingsEditValue\" value=\""+(entry.value!==undefined?entry.value:"")+"\"></label>"+(parameter.id==="imposta_elettrica"?"<label>Unità<input type=\"text\" id=\"settingsEditUnit\" value=\""+(entry.unit||"")+"\"></label>":"<input type=\"hidden\" id=\"settingsEditUnit\" value=\""+(entry.unit||parameter.unit)+"\">")+"<div class=\"settings-editor-actions\"><button type=\"button\" class=\"settings-save\">Salva</button><button type=\"button\" class=\"settings-cancel\">Annulla</button></div>";
+  const editor=history.querySelector(".settings-editor"); const entry=index>=0?parameter.values[index]:{date:"",value:"",unit:parameter.unit}; editor.hidden=false;
+  editor.innerHTML='<label>Decorrenza<input type="date" id="settingsEditDate" value="'+(entry.date||"")+'"></label><label>Valore<input type="number" step="any" id="settingsEditValue" value="'+(entry.value!==undefined?entry.value:"")+'"></label>'+(parameter.id==="imposta_elettrica"?'<label>Unità<input type="text" id="settingsEditUnit" value="'+(entry.unit||"")+'"></label>':'<input type="hidden" id="settingsEditUnit" value="'+(entry.unit||parameter.unit)+'">')+'<div class="settings-editor-actions"><button type="button" class="settings-save">Salva</button><button type="button" class="settings-cancel">Annulla</button></div>';
   editor.querySelector(".settings-save").addEventListener("click",function(){
-    const date=editor.querySelector("#settingsEditDate").value;
-    const value=Number(editor.querySelector("#settingsEditValue").value);
-    const unit=editor.querySelector("#settingsEditUnit").value;
+    const date=editor.querySelector("#settingsEditDate").value; const value=Number(editor.querySelector("#settingsEditValue").value); const unit=editor.querySelector("#settingsEditUnit").value;
     if(!date||!Number.isFinite(value)){alert("Inserisci una data e un valore validi.");return;}
-    const newEntry={date:date,value:value,unit:unit||parameter.unit};
-    if(index>=0)parameter.values[index]=newEntry;else parameter.values.push(newEntry);
-    sortParameterValues(parameter);
-    saveEconomicParameters();
-    renderSettings();
-    renderSavingsPage();
+    const newEntry={date:date,value:value,unit:unit||parameter.unit}; if(index>=0)parameter.values[index]=newEntry;else parameter.values.push(newEntry);
+    sortParameterValues(parameter);saveEconomicParameters();renderSettings();renderSavingsPage();
   });
   editor.querySelector(".settings-cancel").addEventListener("click",function(){editor.hidden=true;});
 }
+
 function renderMonthly(data){}
 function renderNufri(data){}
 function renderSavings(data){}
@@ -135,8 +391,8 @@ async function loadData(){
     const immessoOggi=Number(d.immesso_rete_kwh)||0;
     const autoconsumoOggi=Math.max(0,produzioneOggi-immessoOggi);
     const prezzoAcquisto=getParameterEntry("energia_acquistata")?.value??0.154852;
-  const prezzoImmissione=getParameterEntry("energia_immessa")?.value??0.06;
-  const risparmioOggi=(autoconsumoOggi*prezzoAcquisto)+(immessoOggi*prezzoImmissione);
+    const prezzoImmissione=getParameterEntry("energia_immessa")?.value??0.06;
+    const risparmioOggi=(autoconsumoOggi*prezzoAcquisto)+(immessoOggi*prezzoImmissione);
     $("risparmioOggi").textContent=formatEuro(risparmioOggi);
     $("lastUpdate").textContent=formatTime(d.rilevazione_at);
 
