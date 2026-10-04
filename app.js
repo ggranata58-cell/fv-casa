@@ -5,7 +5,7 @@ const $=id=>document.getElementById(id);
 
 let storicoData=[];
 let risparmioData=[];
-let storicoPeriodo="giorno";
+let storicoPeriodo="mese";
 let settingsSyncRequested=false;
 const SETTINGS_STORAGE_KEY="fv-casa-economic-parameters-v1";
 const DEFAULT_ECONOMIC_PARAMETERS=[
