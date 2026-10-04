@@ -112,13 +112,51 @@
 </section>
 </section>
 
+<section id="pageImpostazioni" class="app-page" hidden>
+<header class="page-header">
+  <h1>⚙️ Impostazioni</h1>
+  <div class="page-subtitle">Parametri e collegamenti dell'app</div>
+</header>
+
+<section class="settings-card">
+  <div class="settings-title">💶 Parametri economici</div>
+  <div class="settings-list">
+    <div class="settings-row"><span>Prezzo energia acquistata</span><strong>0,154852 €/kWh</strong><small>Dal 01/02/2026</small></div>
+    <div class="settings-row"><span>Prezzo energia immessa</span><strong>0,060000 €/kWh</strong><small>Dal 01/02/2026</small></div>
+    <div class="settings-row"><span>Imposta elettrica</span><strong>0,001 €/kWh</strong><small>Dal 01/03/2026</small></div>
+    <div class="settings-row"><span>IVA</span><strong>10%</strong><small>Dal 01/03/2026</small></div>
+    <div class="settings-row"><span>Quota potenza P1</span><strong>0,078179 €/kW/giorno</strong><small>Valore attuale</small></div>
+    <div class="settings-row"><span>Quota potenza P3</span><strong>0,002047 €/kW/giorno</strong><small>Valore attuale</small></div>
+    <div class="settings-row"><span>Bono Social</span><strong>0,77 €/mese</strong><small>Ultimo valore noto</small></div>
+    <div class="settings-row"><span>Alquiler contador</span><strong>0,83 €/mese</strong><small>Ultimo valore noto</small></div>
+  </div>
+</section>
+
+<section class="settings-card">
+  <div class="settings-title">🔄 Dati e sincronizzazione</div>
+  <div class="settings-list">
+    <div class="settings-row"><span>Ultimo aggiornamento dati</span><strong id="settingsLastUpdate">—</strong></div>
+    <button id="settingsSync" class="settings-action" type="button">Sincronizza dati</button>
+  </div>
+</section>
+
+<section class="settings-card">
+  <div class="settings-title">ℹ️ Informazioni app</div>
+  <div class="settings-list">
+    <div class="settings-row"><span>Nome</span><strong>FV Casa</strong></div>
+    <div class="settings-row"><span>Versione</span><strong>1.0</strong></div>
+    <div class="settings-row"><span>Ultimo aggiornamento</span><strong>03/10/2026</strong></div>
+  </div>
+</section>
+</section>
+
 <div id="status" class="status">Connessione in corso…</div>
 
 <nav class="bottom-nav" aria-label="Navigazione principale">
   <button class="nav-item active" type="button" data-page="Oggi" aria-label="Oggi" onclick="showPage('Oggi')"><span>🏠</span><small>Oggi</small></button>
   <button class="nav-item" type="button" data-page="Storico" aria-label="Storico" onclick="showPage('Storico')"><span>📊</span><small>Storico</small></button>
   <button class="nav-item" type="button" data-page="Risparmio" aria-label="Risparmio" onclick="showPage('Risparmio')"><span>💰</span><small>Risparmio</small></button>
-  <button class="nav-item" type="button" data-page="Impostazioni" aria-label="Impostazioni"><span>⚙️</span><small>Impostazioni</small></button>
+  <button class="nav-item" type="button" data-page="Impostazioni" aria-label="Impostazioni" onclick="showPage('Impostazioni')"><span>⚙️</span><small>Impostazioni</small></button>
 </nav>
 
 <footer>
@@ -128,6 +166,6 @@
 
 </main>
 
-<script>function showPage(page){setPage(page);}</script><script src="app.js?v=8"></script>
+<script>function showPage(page){setPage(page);}</script><script src="app.js?v=9"></script>
 </body>
 </html>
