@@ -6,6 +6,7 @@ const $=id=>document.getElementById(id);
 let storicoData=[];
 let risparmioData=[];
 let storicoPeriodo="giorno";
+let settingsSyncRequested=false;
 
 function formatNumber(value,decimals=3){
   const n=Number(value);
@@ -47,14 +48,17 @@ function setPage(page){
   const oggi=page==="Oggi";
   const storico=page==="Storico";
   const risparmio=page==="Risparmio";
+  const impostazioni=page==="Impostazioni";
   $("pageOggi").hidden=!oggi;
   $("pageStorico").hidden=!storico;
   $("pageRisparmio").hidden=!risparmio;
+  $("pageImpostazioni").hidden=!impostazioni;
   document.querySelectorAll(".nav-item").forEach(button=>{
     button.classList.toggle("active",button.dataset.page===page);
   });
   if(storico) renderHistory(storicoPeriodo);
   if(risparmio) renderSavingsPage();
+  if(impostazioni) renderSettings();
 }
 
 function createChart(containerId,rows,series,titleSuffix,formatter=formatNumber){
@@ -278,6 +282,12 @@ function renderSavingsPage(){
   }
 }
 
+
+function renderSettings(){
+  const lastUpdate=$("lastUpdate")?.textContent||"—";
+  $("settingsLastUpdate").textContent=lastUpdate;
+}
+
 function renderMonthly(data){}
 function renderNufri(data){}
 function renderSavings(data){}
@@ -287,7 +297,7 @@ function setupNavigation(){
     button.addEventListener("click",event=>{
       event.preventDefault();
       const page=button.getAttribute("data-page");
-      if(page==="Oggi"||page==="Storico"||page==="Risparmio") setPage(page);
+      if(page==="Oggi"||page==="Storico"||page==="Risparmio"||page==="Impostazioni") setPage(page);
     });
   });
 
@@ -298,6 +308,7 @@ function setupNavigation(){
 
 setTodayDate();
 setupNavigation();
+$("settingsSync")?.addEventListener("click",()=>loadData());
 
 async function loadData(){
   const status=$("status");
