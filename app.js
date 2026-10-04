@@ -274,11 +274,7 @@ function renderSavingsPage(){
       '<div class="breakdown-month">'+meseRisparmio+' — ultimo mese disponibile</div>'+
       '<div class="breakdown-row"><span>Costo senza impianto FV</span><strong></strong><em>'+formatEuro(costoSenza)+'</em></div>'+
       '<div class="breakdown-row"><span>Costo effettivo con impianto FV</span><strong></strong><em>'+formatEuro(costoCon)+'</em></div>'+
-      '<div class="breakdown-total"><span>Risparmio FV</span><strong></strong><em>'+formatEuro(risparmio)+'</em></div>'+
-      '<div class="breakdown-note">Il risparmio è la differenza tra il costo teorico senza FV e l’importo effettivo della fattura.</div>'+
-      (energyMonth?
-        '<div class="breakdown-energy"><span>Dati energetici del mese</span><span>Produzione FV '+formatKwh(produzione)+' · Immessa in rete '+formatKwh(immesso)+'</span></div>'
-        :'');
+      '<div class="breakdown-total"><span>Risparmio FV</span><strong></strong><em>'+formatEuro(risparmio)+'</em></div>';
   }
 }
 
