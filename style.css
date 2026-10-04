@@ -411,3 +411,74 @@ footer strong{
   .breakdown-row{grid-template-columns:minmax(0,1fr) 66px 66px;column-gap:8px}
   .breakdown-row span{font-size:11px}.breakdown-row strong,.breakdown-row em{font-size:11px}
 }
+
+.settings-card{
+  border-radius:22px;
+  padding:20px;
+  margin-bottom:13px;
+  background:#fff;
+}
+
+.settings-title{
+  font-size:15px;
+  font-weight:650;
+  margin-bottom:8px;
+}
+
+.settings-list{
+  display:flex;
+  flex-direction:column;
+}
+
+.settings-row{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:3px 14px;
+  align-items:center;
+  padding:11px 0;
+  border-bottom:1px solid rgba(31,41,55,.08);
+}
+
+.settings-row:last-child{
+  border-bottom:0;
+}
+
+.settings-row span{
+  min-width:0;
+  color:#59616c;
+  font-size:12px;
+  line-height:1.25;
+}
+
+.settings-row strong{
+  text-align:right;
+  color:#374151;
+  font-size:12px;
+  font-weight:700;
+  white-space:nowrap;
+}
+
+.settings-row small{
+  grid-column:1 / -1;
+  color:#9ca3af;
+  font-size:10px;
+  line-height:1.2;
+}
+
+.settings-action{
+  width:100%;
+  min-height:42px;
+  margin-top:8px;
+  border:0;
+  border-radius:13px;
+  background:#e7f7ea;
+  color:#2f6f3d;
+  font-size:13px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+@media(max-width:340px){
+  .settings-row{grid-template-columns:minmax(0,1fr) auto;gap:3px 8px}
+  .settings-row strong{font-size:11px}
+}
