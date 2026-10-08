@@ -5,6 +5,7 @@ const $=id=>document.getElementById(id);
 
 let storicoData=[];
 let risparmioData=[];
+let andamentoOggi=[];
 let storicoPeriodo="mese";
 let settingsSyncRequested=false;
 const SETTINGS_STORAGE_KEY="fv-casa-economic-parameters-v1";
@@ -256,6 +257,84 @@ function renderHistory(period=storicoPeriodo){
   }
 }
 
+function renderTodayChart(rows){
+  const container=$("todayChart");
+  if(!container)return;
+
+  const valid=(Array.isArray(rows)?rows:[]).filter(row=>
+    row &&
+    row.rilevazione_at &&
+    Number.isFinite(Number(row.produzione_fv_kw)) &&
+    Number.isFinite(Number(row.consumo_casa_kw)) &&
+    Number.isFinite(Number(row.prelevio_rete_kw||row.prelevato_rete_kw||row.prelievo_rete_kw))
+  );
+
+  if(!valid.length){
+    container.innerHTML='<div class="chart-empty">Nessun dato disponibile per oggi</div>';
+    return;
+  }
+
+  const width=760;
+  const height=300;
+  const left=48;
+  const right=16;
+  const top=24;
+  const bottom=42;
+  const chartWidth=width-left-right;
+  const chartHeight=height-top-bottom;
+
+  const getImport=row=>Number(row.prelevio_rete_kw||row.prelevato_rete_kw||row.prelievo_rete_kw)||0;
+  const values=[];
+  valid.forEach(row=>{
+    values.push(Number(row.produzione_fv_kw)||0,Number(row.consumo_casa_kw)||0,getImport(row));
+  });
+
+  const maxValue=Math.max(...values,0);
+  const yMax=maxValue>0?Math.ceil(maxValue*1.1*10)/10:1;
+
+  const x=index=>valid.length===1
+    ? left+chartWidth/2
+    : left+(index/(valid.length-1))*chartWidth;
+
+  const y=value=>top+chartHeight-(Math.max(0,Number(value))/yMax)*chartHeight;
+
+  const pathFor=key=>valid.map((row,index)=>{
+    const value=key==="prelievo_rete_kw"?getImport(row):Number(row[key])||0;
+    return (index===0?"M":"L")+x(index).toFixed(2)+" "+y(value).toFixed(2);
+  }).join(" ");
+
+  const grid=[];
+  for(let n=0;n<=4;n++){
+    const value=(yMax/4)*n;
+    const yy=y(value);
+    grid.push('<line x1="'+left+'" y1="'+yy+'" x2="'+(width-right)+'" y2="'+yy+'" class="today-chart-grid"></line>');
+    grid.push('<text x="'+(left-8)+'" y="'+(yy+4)+'" text-anchor="end" class="today-chart-axis">'+formatNumber(value,1)+'</text>');
+  }
+
+  const labels=[];
+  const labelCount=Math.min(6,valid.length);
+  for(let n=0;n<labelCount;n++){
+    const index=labelCount===1?0:Math.round((n/(labelCount-1))*(valid.length-1));
+    labels.push('<text x="'+x(index)+'" y="'+(height-14)+'" text-anchor="middle" class="today-chart-axis">'+formatTime(valid[index].rilevazione_at).slice(0,5)+'</text>');
+  }
+
+  container.innerHTML=
+    '<div class="today-chart-legend">'+
+      '<span><i class="legend-production"></i>Produzione</span>'+
+      '<span><i class="legend-consumption"></i>Consumo</span>'+
+      '<span><i class="legend-import"></i>Prelievo</span>'+
+    '</div>'+
+    '<div class="today-chart-wrap">'+
+      '<svg class="today-chart-svg" viewBox="0 0 '+width+' '+height+'" role="img" aria-label="Andamento di oggi">'+
+        grid.join("")+
+        labels.join("")+
+        '<path d="'+pathFor("produzione_fv_kw")+'" class="today-line production"></path>'+
+        '<path d="'+pathFor("consumo_casa_kw")+'" class="today-line consumption"></path>'+
+        '<path d="'+pathFor("prelievo_rete_kw")+'" class="today-line import"></path>'+
+      '</svg>'+
+    '</div>';
+}
+
 function renderSavingsPage(){
   const produzioneOggi=Number($("produzioneKwh").textContent.replace(",", "."))||0;
   const immessoOggi=Number($("immessoKwh").textContent.replace(",", "."))||0;
@@ -384,6 +463,9 @@ async function loadData(){
     $("consumoKwh").textContent=formatKwh(d.consumo_casa_kwh);
     $("immessoKwh").textContent=formatKwh(d.immesso_rete_kwh);
     $("prelevatoKwh").textContent=formatKwh(d.prelevato_rete_kwh);
+
+    andamentoOggi=Array.isArray(result.andamento_oggi)?result.andamento_oggi:[];
+    renderTodayChart(andamentoOggi);
 
     risparmioData=Array.isArray(result.risparmio)?result.risparmio:[];
     const corrente=risparmioData.length?risparmioData[0]:null;
