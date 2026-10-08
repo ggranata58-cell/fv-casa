@@ -365,7 +365,7 @@ function renderSavingsPage(){
     trendContainer.innerHTML=trend.map(row=>{
       const value=Number(row.risparmio_fv)||0;
       const width=max>0?Math.max(3,(value/max)*100):3;
-      return '<div class="chart-row"><span class="chart-label">'+formatMonth(row.mese)+'</span><div class="chart-track"><div class="chart-bar savings" style="width:'+width+'%"></div></div><strong class="chart-value">'+formatEuro(value)+'</strong></div>';
+      const provisional=(String(row.mese).slice(0,7)==="2026-09"||String(row.mese).slice(0,7)==="2026-10")?" provisional":""; return '<div class="chart-row"><span class="chart-label">'+formatMonth(row.mese)+'</span><div class="chart-track"><div class="chart-bar savings'+provisional+'" style="width:'+width+'%"></div></div><strong class="chart-value">'+formatEuro(value)+'</strong></div>';
     }).join("");
   }
 
