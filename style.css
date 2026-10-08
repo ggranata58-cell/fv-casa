@@ -544,10 +544,10 @@ footer strong{
 .today-chart-legend{display:flex;flex-wrap:wrap;gap:10px 14px;margin-bottom:8px;color:#59616c;font-size:10px}
 .today-chart-legend span{display:flex;align-items:center;gap:5px}
 .today-chart-legend i{display:inline-block;width:9px;height:9px;border-radius:50%}
-.legend-production{background:#d9b93f}
-.legend-consumption{background:#62a9d6}
-.legend-import{background:#9baec0}
+.legend-production{background:#2e9b57}
+.legend-consumption{background:#d9b93f}
+.legend-import{background:#d94b4b}
 .today-line{fill:none;stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}
-.today-line.production{stroke:#d9b93f}
-.today-line.consumption{stroke:#62a9d6}
-.today-line.import{stroke:#9baec0}
+.today-line.production{stroke:#2e9b57}
+.today-line.consumption{stroke:#d9b93f}
+.today-line.import{stroke:#d94b4b}
