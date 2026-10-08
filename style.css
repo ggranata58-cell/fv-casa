@@ -533,3 +533,21 @@ footer strong{
 .settings-add{width:100%;min-height:34px;margin-top:8px;border:1px dashed #b9c1c9;border-radius:9px;background:transparent;color:#59616c;font-size:10px;font-weight:700;cursor:pointer}
 .settings-secondary{width:100%;min-height:38px;margin-top:10px;border:0;border-radius:11px;background:#f0f1f2;color:#59616c;font-size:11px;font-weight:700;cursor:pointer}
 @media(max-width:340px){.settings-history-row{grid-template-columns:72px minmax(0,1fr) auto;gap:5px}.settings-current-value{font-size:11px}}
+
+
+.today-history{background:#ffffff}
+.today-chart-area{width:100%}
+.today-chart-wrap{width:100%;overflow:hidden}
+.today-chart-svg{display:block;width:100%;height:auto}
+.today-chart-grid{stroke:rgba(31,41,55,.10);stroke-width:1}
+.today-chart-axis{fill:#7b8490;font-size:10px}
+.today-chart-legend{display:flex;flex-wrap:wrap;gap:10px 14px;margin-bottom:8px;color:#59616c;font-size:10px}
+.today-chart-legend span{display:flex;align-items:center;gap:5px}
+.today-chart-legend i{display:inline-block;width:9px;height:9px;border-radius:50%}
+.legend-production{background:#d9b93f}
+.legend-consumption{background:#62a9d6}
+.legend-import{background:#9baec0}
+.today-line{fill:none;stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}
+.today-line.production{stroke:#d9b93f}
+.today-line.consumption{stroke:#62a9d6}
+.today-line.import{stroke:#9baec0}
