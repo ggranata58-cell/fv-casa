@@ -348,7 +348,6 @@ function renderSavingsPage(){
   const corrente=risparmioData.length?risparmioData[0]:null;
   if(corrente){
     const meseDisponibile=formatMonth(corrente.mese);
-    $("risparmioMese").previousElementSibling.textContent="Ultimo mese disponibile: "+meseDisponibile;
     $("pageRisparmioMese").previousElementSibling.textContent="Ultimo mese disponibile: "+meseDisponibile;
     $("pageRisparmioMese").textContent=formatEuro(corrente.risparmio_fv);
     const risparmioFvCumulato=risparmioData.reduce((totale,row)=>totale+(Number(row.risparmio_fv)||0),0);
@@ -481,7 +480,6 @@ async function loadData(){
     const prezzoAcquisto=getParameterEntry("energia_acquistata")?.value??0.154852;
     const prezzoImmissione=getParameterEntry("energia_immessa")?.value??0.06;
     const risparmioOggi=(autoconsumoOggi*prezzoAcquisto)+(immessoOggi*prezzoImmissione);
-    $("risparmioOggi").textContent=formatEuro(risparmioOggi);
     $("lastUpdate").textContent=formatTime(d.rilevazione_at);
 
     storicoData=
