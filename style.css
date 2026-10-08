@@ -228,6 +228,7 @@ button{font:inherit}
 
 .chart-bar.chart-energy{background:#62a9d6}
 .chart-bar.savings{background:#69ae78}
+.chart-bar.savings.provisional{background:#d94b4b}
 
 .chart-value{
   min-width:48px;
