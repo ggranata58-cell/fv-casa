@@ -480,6 +480,12 @@ async function loadData(){
       Array.isArray(result.storico_mensile) ? result.storico_mensile :
       [];
 
+    risparmioData=
+      Array.isArray(result.risparmio_mensile) ? result.risparmio_mensile :
+      Array.isArray(result.risparmio) ? result.risparmio :
+      Array.isArray(result.risparmioData) ? result.risparmioData :
+      [];
+
     renderHistory(storicoPeriodo);
     renderSavingsPage();
     status.textContent="Dati aggiornati";
