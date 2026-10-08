@@ -466,14 +466,6 @@ async function loadData(){
     andamentoOggi=Array.isArray(result.andamento_oggi)?result.andamento_oggi:[];
     renderTodayChart(andamentoOggi);
 
-    risparmioData=Array.isArray(result.risparmio)?result.risparmio:[];
-    const corrente=risparmioData.length?risparmioData[0]:null;
-
-    if(corrente){
-      $("risparmioMese").textContent=formatEuro(corrente.risparmio_fv);
-      $("risparmioCumulato").textContent=formatEuro(corrente.risparmio_netto_cumulato);
-    }
-
     const produzioneOggi=Number(d.produzione_fv_kwh)||0;
     const immessoOggi=Number(d.immesso_rete_kwh)||0;
     const autoconsumoOggi=Math.max(0,produzioneOggi-immessoOggi);
