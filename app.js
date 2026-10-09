@@ -345,13 +345,17 @@ function renderTodayChart(rows){
     '</div>';
 }
 
+function calcolaRisparmioOggi(produzioneOggi,immessoOggi){
+  const autoconsumoOggi=Math.max(0,Number(produzioneOggi)||0-(Number(immessoOggi)||0));
+  const prezzoAcquisto=getParameterEntry("energia_acquistata")?.value??0.154852;
+  const prezzoImmissione=getParameterEntry("energia_immessa")?.value??0.06;
+  return autoconsumoOggi*prezzoAcquisto+(Number(immessoOggi)||0)*prezzoImmissione;
+}
+
 function renderSavingsPage(){
   const produzioneOggi=Number($("produzioneKwh").textContent.replace(",", "."))||0;
   const immessoOggi=Number($("immessoKwh").textContent.replace(",", "."))||0;
-  const autoconsumoOggi=Math.max(0,produzioneOggi-immessoOggi);
-  const prezzoAcquisto=getParameterEntry("energia_acquistata")?.value??0.154852;
-    const prezzoImmissione=getParameterEntry("energia_immessa")?.value??0.06;
-    const risparmioOggi=(autoconsumoOggi*prezzoAcquisto)+(immessoOggi*prezzoImmissione);
+  const risparmioOggi=calcolaRisparmioOggi(produzioneOggi,immessoOggi);
 
   $("pageRisparmioOggi").textContent=formatEuro(risparmioOggi);
 
@@ -491,10 +495,7 @@ async function loadData(){
 
     const produzioneOggi=Number(d.produzione_fv_kwh)||0;
     const immessoOggi=Number(d.immesso_rete_kwh)||0;
-    const autoconsumoOggi=Math.max(0,produzioneOggi-immessoOggi);
-    const prezzoAcquisto=getParameterEntry("energia_acquistata")?.value??0.154852;
-    const prezzoImmissione=getParameterEntry("energia_immessa")?.value??0.06;
-    const risparmioOggi=(autoconsumoOggi*prezzoAcquisto)+(immessoOggi*prezzoImmissione);
+    $("pageRisparmioOggi").textContent=formatEuro(calcolaRisparmioOggi(produzioneOggi,immessoOggi));
     $("lastUpdate").textContent=formatTime(d.rilevazione_at);
 
     storicoData=
