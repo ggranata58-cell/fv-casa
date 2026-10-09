@@ -354,7 +354,7 @@ function calcolaRisparmioOggi(produzioneOggi,immessoOggi){
 
 function renderSavingsPage(){
   const produzioneOggi=Number($("produzioneKwh").textContent.replace(",", "."))||0;
-  const immessoOggi=Number($("immessoKwh").textContent.replace(",", "."))||0;
+  const immessoOggi=Number($("immessoKwh").textContent.replace(" kWh","").replace(",", "."))||0;
   const risparmioOggi=calcolaRisparmioOggi(produzioneOggi,immessoOggi);
 
   $("pageRisparmioOggi").textContent=formatEuro(risparmioOggi);
