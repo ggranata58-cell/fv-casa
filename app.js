@@ -346,7 +346,7 @@ function renderTodayChart(rows){
 }
 
 function calcolaRisparmioOggi(produzioneOggi,immessoOggi){
-  const autoconsumoOggi=Math.max(0,Number(produzioneOggi)||0-(Number(immessoOggi)||0));
+  const autoconsumoOggi=Math.max(0,(Number(produzioneOggi)||0)-(Number(immessoOggi)||0));
   const prezzoAcquisto=getParameterEntry("energia_acquistata")?.value??0.154852;
   const prezzoImmissione=getParameterEntry("energia_immessa")?.value??0.06;
   return autoconsumoOggi*prezzoAcquisto+(Number(immessoOggi)||0)*prezzoImmissione;
