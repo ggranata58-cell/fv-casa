@@ -384,21 +384,25 @@ function renderSavingsPage(){
     }).join("");
   }
 
-  const energyMonth=storicoData.find(row=>corrente&&String(row.mese)===String(corrente.mese));
   const breakdown=$("savingsBreakdown");
   if(corrente){
-    const meseRisparmio=formatMonth(corrente.mese);
-    const costoSenza=Number(corrente.costo_senza_fv)||0;
-    const costoCon=Number(corrente.costo_con_fv)||0;
-    const risparmio=Number(corrente.risparmio_fv)||0;
-    const produzione=energyMonth?Number(energyMonth.produzione_fv_kwh)||0:0;
-    const immesso=energyMonth?Number(energyMonth.immesso_rete_kwh)||0:0;
-
-    breakdown.innerHTML=
-      '<div class="breakdown-month">'+meseRisparmio+' — ultimo mese disponibile</div>'+
-      '<div class="breakdown-row"><span>Costo senza impianto FV</span><strong></strong><em>'+formatEuro(costoSenza)+'</em></div>'+
-      '<div class="breakdown-row"><span>Costo effettivo con impianto FV</span><strong></strong><em>'+formatEuro(costoCon)+'</em></div>'+
-      '<div class="breakdown-total"><span>Risparmio FV</span><strong></strong><strong>'+formatEuro(risparmio)+'</strong></div>';
+    const ordinati=[...risparmioData].sort((a,b)=>String(b.mese).localeCompare(String(a.mese)));
+    const ultimoDefinitivo=ordinati.find(row=>!isProvisionalMonth(row));
+    const ultimoProvvisorio=ordinati.find(row=>isProvisionalMonth(row));
+    let html="";
+    if(ultimoDefinitivo){
+      html+='<div class="breakdown-month">'+formatMonth(ultimoDefinitivo.mese)+' — ultima fattura definitiva</div>'+
+        '<div class="breakdown-row"><span>Costo senza impianto FV</span><strong></strong><em>'+formatEuro(Number(ultimoDefinitivo.costo_senza_fv)||0)+'</em></div>'+
+        '<div class="breakdown-row"><span>Costo effettivo con impianto FV</span><strong></strong><em>'+formatEuro(Number(ultimoDefinitivo.costo_con_fv)||0)+'</em></div>'+
+        '<div class="breakdown-total"><span>Risparmio FV</span><strong></strong><strong>'+formatEuro(Number(ultimoDefinitivo.risparmio_fv)||0)+'</strong></div>';
+    }
+    if(ultimoProvvisorio){
+      html+='<div class="breakdown-month">'+formatMonth(ultimoProvvisorio.mese)+' — mese provvisorio</div>'+
+        '<div class="breakdown-row"><span>Costo senza impianto FV</span><strong></strong><em>Da confermare</em></div>'+
+        '<div class="breakdown-row"><span>Costo effettivo con impianto FV</span><strong></strong><em>Da confermare</em></div>'+
+        '<div class="breakdown-total"><span>Risparmio FV</span><strong></strong><strong>Provvisorio</strong></div>';
+    }
+    breakdown.innerHTML=html;
   }
 }
 
