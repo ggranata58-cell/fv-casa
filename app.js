@@ -369,9 +369,12 @@ function renderSavingsPage(){
     const rateFinanziamento=rateComplete
       ? risparmioData.reduce((totale,row)=>totale+Number(row.rata_finanziamento),0)
       : risparmioFvCumulato-(Number(corrente.risparmio_netto_cumulato)||0);
-    const risultatoNetto=rateComplete
-      ? risparmioFvCumulato-rateFinanziamento
-      : Number(corrente.risparmio_netto_cumulato)||0;
+    const risultatoNetto=
+      corrente.risparmio_netto_cumulato!==null && corrente.risparmio_netto_cumulato!==undefined
+        ? Number(corrente.risparmio_netto_cumulato)||0
+        : rateComplete
+          ? risparmioFvCumulato-rateFinanziamento
+          : 0;
     $("pageRisparmioCumulato").textContent=formatEuro(risparmioFvCumulato);
     $("pageRisparmioRate").textContent=formatEuro(rateFinanziamento);
     $("pageRisparmioNetto").textContent=formatEuro(risultatoNetto);
@@ -408,6 +411,7 @@ function renderSavingsPage(){
         '<div class="breakdown-row"><span>Costo senza impianto FV</span><strong></strong><em>ND</em></div>'+
         '<div class="breakdown-row"><span>Costo effettivo con impianto FV</span><strong></strong><em>ND</em></div>'+
         '<div class="breakdown-total"><span>Risparmio FV provvisorio</span><strong></strong><strong>'+formatEuro(Number(ultimoProvvisorio.risparmio_fv)||0)+'</strong></div>'+
+        '<div class="breakdown-total"><span>Risultato economico netto provvisorio</span><strong></strong><strong>'+formatEuro(Number(ultimoProvvisorio.risparmio_netto)||0)+'</strong></div>'+
         '</div>';
     }
     breakdown.innerHTML=html;
