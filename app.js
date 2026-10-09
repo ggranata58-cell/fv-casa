@@ -391,16 +391,23 @@ function renderSavingsPage(){
     const ultimoProvvisorio=ordinati.find(row=>isProvisionalMonth(row));
     let html="";
     if(ultimoDefinitivo){
-      html+='<div class="breakdown-month">'+formatMonth(ultimoDefinitivo.mese)+' — ultima fattura definitiva</div>'+
+      html+='<div class="breakdown-period">'+
+        '<div class="breakdown-month">'+formatMonth(ultimoDefinitivo.mese)+' — ultima fattura</div>'+
         '<div class="breakdown-row"><span>Costo senza impianto FV</span><strong></strong><em>'+formatEuro(Number(ultimoDefinitivo.costo_senza_fv)||0)+'</em></div>'+
         '<div class="breakdown-row"><span>Costo effettivo con impianto FV</span><strong></strong><em>'+formatEuro(Number(ultimoDefinitivo.costo_con_fv)||0)+'</em></div>'+
-        '<div class="breakdown-total"><span>Risparmio FV</span><strong></strong><strong>'+formatEuro(Number(ultimoDefinitivo.risparmio_fv)||0)+'</strong></div>';
+        '<div class="breakdown-total"><span>Risparmio FV</span><strong></strong><strong>'+formatEuro(Number(ultimoDefinitivo.risparmio_fv)||0)+'</strong></div>'+
+        '</div>';
     }
     if(ultimoProvvisorio){
-      html+='<div class="breakdown-month">'+formatMonth(ultimoProvvisorio.mese)+' — mese provvisorio</div>'+
-        '<div class="breakdown-row"><span>Costo senza impianto FV</span><strong></strong><em>Da confermare</em></div>'+
-        '<div class="breakdown-row"><span>Costo effettivo con impianto FV</span><strong></strong><em>Da confermare</em></div>'+
-        '<div class="breakdown-total"><span>Risparmio FV</span><strong></strong><strong>Provvisorio</strong></div>';
+      const risparmioProvvisorioCumulato=ultimoProvvisorio.risparmio_fv_cumulato!==null && ultimoProvvisorio.risparmio_fv_cumulato!==undefined
+        ? Number(ultimoProvvisorio.risparmio_fv_cumulato)||0
+        : ordinati.reduce((totale,row)=>totale+(Number(row.risparmio_fv)||0),0);
+      html+='<div class="breakdown-period breakdown-period-provisional">'+
+        '<div class="breakdown-month">'+formatMonth(ultimoProvvisorio.mese)+' — mese provvisorio</div>'+
+        '<div class="breakdown-row"><span>Costo senza impianto FV</span><strong></strong><em>ND</em></div>'+
+        '<div class="breakdown-row"><span>Costo effettivo con impianto FV</span><strong></strong><em>ND</em></div>'+
+        '<div class="breakdown-total"><span>Risparmio FV provvisorio</span><strong></strong><strong>'+formatEuro(risparmioProvvisorioCumulato)+'</strong></div>'+
+        '</div>';
     }
     breakdown.innerHTML=html;
   }
