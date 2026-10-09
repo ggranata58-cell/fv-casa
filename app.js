@@ -350,7 +350,7 @@ function renderSavingsPage(){
     const meseDisponibile=formatMonth(corrente.mese);
     $("pageRisparmioMese").previousElementSibling.textContent="Ultimo mese disponibile: "+meseDisponibile;
     $("pageRisparmioMese").textContent=formatEuro(corrente.risparmio_fv);
-    const risparmioFvCumulato=risparmioData.reduce((totale,row)=>totale+(Number(row.risparmio_fv)||0),0);
+    const risparmioFvCumulato=corrente.risparmio_fv_cumulato!==null && corrente.risparmio_fv_cumulato!==undefined ? Number(corrente.risparmio_fv_cumulato)||0 : risparmioData.reduce((totale,row)=>totale+(Number(row.risparmio_fv)||0),0);
     const risultatoNetto=Number(corrente.risparmio_netto_cumulato)||0;
     const rateFinanziamento=risparmioFvCumulato-risultatoNetto;
     $("pageRisparmioCumulato").textContent=formatEuro(risparmioFvCumulato);
@@ -365,7 +365,7 @@ function renderSavingsPage(){
     trendContainer.innerHTML=trend.map(row=>{
       const value=Number(row.risparmio_fv)||0;
       const width=max>0?Math.max(3,(value/max)*100):3;
-      const provisional=(String(row.mese).slice(0,7)==="2026-09"||String(row.mese).slice(0,7)==="2026-10")?" provisional":""; return '<div class="chart-row"><span class="chart-label">'+formatMonth(row.mese)+'</span><div class="chart-track"><div class="chart-bar savings'+provisional+'" style="width:'+width+'%"></div></div><strong class="chart-value">'+formatEuro(value)+'</strong></div>';
+      const provisional=(String(row.mese).slice(0,7)==="2026-09"||String(row.mese).slice(0,7)==="2026-10")?" provisional":""; const cumulato=row.risparmio_fv_cumulato!==null && row.risparmio_fv_cumulato!==undefined ? ' <small class="chart-cumulative">Cumulato: '+formatEuro(row.risparmio_fv_cumulato)+'</small>' : ''; return '<div class="chart-row"><span class="chart-label">'+formatMonth(row.mese)+'</span><div class="chart-track"><div class="chart-bar savings'+provisional+'" style="width:'+width+'%"></div></div><strong class="chart-value">'+formatEuro(value)+cumulato+'</strong></div>';
     }).join("");
   }
 
