@@ -369,12 +369,7 @@ function renderSavingsPage(){
     const rateFinanziamento=rateComplete
       ? risparmioData.reduce((totale,row)=>totale+Number(row.rata_finanziamento),0)
       : risparmioFvCumulato-(Number(corrente.risparmio_netto_cumulato)||0);
-    const risultatoNetto=
-      corrente.risparmio_netto_cumulato!==null && corrente.risparmio_netto_cumulato!==undefined
-        ? Number(corrente.risparmio_netto_cumulato)||0
-        : rateComplete
-          ? risparmioFvCumulato-rateFinanziamento
-          : 0;
+    const risultatoNetto=risparmioFvCumulato-rateFinanziamento;
     $("pageRisparmioCumulato").textContent=formatEuro(risparmioFvCumulato);
     $("pageRisparmioRate").textContent=formatEuro(rateFinanziamento);
     $("pageRisparmioNetto").textContent=formatEuro(risultatoNetto);
