@@ -100,7 +100,7 @@ function createChart(containerId,rows,series,titleSuffix,formatter=formatNumber)
     return `
       <div class="chart-row">
         <span class="chart-label">${row.label}</span>
-        <div class="chart-track"><div class="chart-bar ${series}${(series==="savings"&&(String(row.label).includes("settembre")||String(row.label).includes("ottobre")) )?" provisional":""}" style="width:${width}%"></div></div>
+        <div class="chart-track"><div class="chart-bar ${series}${row.stato==="provvisorio"?" provisional":""}" style="width:${width}%"></div></div>
         <strong class="chart-value">${formatter(value)}</strong>
       </div>
     `;
