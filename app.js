@@ -163,12 +163,15 @@ function getSavingsRows(){
           risparmio_fv:0,
           risparmio_netto:0,
           risparmio_netto_cumulato:0,
-          ultimo_mese:""
+          ultimo_mese:"",
+          stato:"definitivo"
         };
       }
 
       grouped[year].risparmio_fv+=Number(row.risparmio_fv)||0;
       grouped[year].risparmio_netto+=Number(row.risparmio_netto)||0;
+
+      if(row.stato==="provvisorio") grouped[year].stato="provvisorio";
 
       if(!grouped[year].ultimo_mese || String(row.mese)>grouped[year].ultimo_mese){
         grouped[year].ultimo_mese=String(row.mese);
@@ -187,7 +190,8 @@ function getSavingsRows(){
       label:formatMonth(row.mese),
       risparmio_fv:Number(row.risparmio_fv)||0,
       risparmio_netto:Number(row.risparmio_netto)||0,
-      risparmio_netto_cumulato:Number(row.risparmio_netto_cumulato)||0
+      risparmio_netto_cumulato:Number(row.risparmio_netto_cumulato)||0,
+      stato:row.stato||"definitivo"
     }));
 }
 
@@ -247,7 +251,7 @@ function renderHistory(period=storicoPeriodo){
       return `
         <div class="chart-row">
           <span class="chart-label">${row.label}</span>
-          <div class="chart-track"><div class="chart-bar savings ${String(row.mese).slice(0,7)==="2026-09"||String(row.mese).slice(0,7)==="2026-10"?"provisional":""}" style="width:${width}%"></div></div>
+          <div class="chart-track"><div class="chart-bar savings ${row.stato==="provvisorio"?"provisional":""}" style="width:${width}%"></div></div>
           <strong class="chart-value">${formatEuro(value)}</strong>
         </div>
       `;
@@ -365,7 +369,7 @@ function renderSavingsPage(){
     trendContainer.innerHTML=trend.map(row=>{
       const value=Number(row.risparmio_fv)||0;
       const width=max>0?Math.max(3,(value/max)*100):3;
-      const provisional=(String(row.mese).slice(0,7)==="2026-09"||String(row.mese).slice(0,7)==="2026-10")?" provisional":""; const cumulato=row.risparmio_fv_cumulato!==null && row.risparmio_fv_cumulato!==undefined ? ' <small class="chart-cumulative">Cumulato: '+formatEuro(row.risparmio_fv_cumulato)+'</small>' : ''; return '<div class="chart-row"><span class="chart-label">'+formatMonth(row.mese)+'</span><div class="chart-track"><div class="chart-bar savings'+provisional+'" style="width:'+width+'%"></div></div><strong class="chart-value">'+formatEuro(value)+cumulato+'</strong></div>';
+      const provisional=row.stato==="provvisorio"?" provisional":""; const cumulato=row.risparmio_fv_cumulato!==null && row.risparmio_fv_cumulato!==undefined ? ' <small class="chart-cumulative">Cumulato: '+formatEuro(row.risparmio_fv_cumulato)+'</small>' : ''; return '<div class="chart-row"><span class="chart-label">'+formatMonth(row.mese)+'</span><div class="chart-track"><div class="chart-bar savings'+provisional+'" style="width:'+width+'%"></div></div><strong class="chart-value">'+formatEuro(value)+cumulato+'</strong></div>';
     }).join("");
   }
 
