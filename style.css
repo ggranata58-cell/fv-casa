@@ -271,6 +271,16 @@ button{font:inherit}
   font-size:10px;
 }
 
+.breakdown-period{
+  display:flex;
+  flex-direction:column;
+  gap:0;
+}
+.breakdown-period-provisional{
+  margin-top:18px;
+  padding-top:14px;
+  border-top:2px solid rgba(31,41,55,.14);
+}
 .breakdown-month{
   margin:0 0 4px;
   color:#59616c;
