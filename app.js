@@ -8,6 +8,7 @@ let risparmioData=[];
 let andamentoOggi=[];
 let storicoPeriodo="mese";
 let settingsSyncRequested=false;
+let lastUpdateText="—";
 const SETTINGS_STORAGE_KEY="fv-casa-economic-parameters-v1";
 const DEFAULT_ECONOMIC_PARAMETERS=[
 {id:"energia_acquistata",name:"Prezzo energia acquistata",unit:"€/kWh",decimals:6,values:[{date:"2026-02-01",value:0.154852}]},
@@ -415,7 +416,7 @@ function renderSavingsPage(){
 
 
 function renderSettings(){
-  const lastUpdate=$("lastUpdate")?.textContent||"—";
+  const lastUpdate=lastUpdateText;
   $("settingsLastUpdate").textContent=lastUpdate;
   const container=$("economicSettings"); if(!container)return;
   container.innerHTML=economicParameters.map(function(parameter){
@@ -495,7 +496,7 @@ async function loadData(){
     const produzioneOggi=Number(d.produzione_fv_kwh)||0;
     const immessoOggi=Number(d.immesso_rete_kwh)||0;
     $("pageRisparmioOggi").textContent=formatEuro(calcolaRisparmioOggi(produzioneOggi,immessoOggi));
-    $("lastUpdate").textContent=formatTime(d.rilevazione_at);
+    lastUpdateText=formatTime(d.rilevazione_at);
 
     storicoData=
       Array.isArray(result.mensile) ? result.mensile :
@@ -511,7 +512,7 @@ async function loadData(){
 
     renderHistory(storicoPeriodo);
     renderSavingsPage();
-    status.textContent="Dati aggiornati";
+    status.textContent="Dati aggiornati alle "+lastUpdateText;
   }catch(error){
     console.error(error);
     status.textContent="Impossibile aggiornare i dati";
