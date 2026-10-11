@@ -363,7 +363,7 @@ function renderSavingsPage(){
   const corrente=risparmioData.length?risparmioData[0]:null;
   if(corrente){
     const meseDisponibile=formatMonth(corrente.mese);
-    $("pageRisparmioMese").previousElementSibling.textContent="Ultimo mese disponibile: "+meseDisponibile;
+    $("pageRisparmioMese").previousElementSibling.textContent=isProvisionalMonth(corrente)?"Ultimo mese disponibile (provvisorio)":"Ultimo mese disponibile: "+meseDisponibile;
     $("pageRisparmioMese").textContent=formatEuro(corrente.risparmio_fv);
     const risparmioFvCumulato=corrente.risparmio_fv_cumulato!==null && corrente.risparmio_fv_cumulato!==undefined ? Number(corrente.risparmio_fv_cumulato)||0 : risparmioData.reduce((totale,row)=>totale+(Number(row.risparmio_fv)||0),0);
     const rateComplete=risparmioData.length>0 && risparmioData.every(row=>row.rata_finanziamento!==null && row.rata_finanziamento!==undefined && String(row.rata_finanziamento).trim()!=="" && Number.isFinite(Number(row.rata_finanziamento)));
