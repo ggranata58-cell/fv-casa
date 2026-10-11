@@ -212,7 +212,6 @@ function renderHistory(period=storicoPeriodo){
 
   if(period==="giorno"){
     $("productionChart").innerHTML=noDailyMessage;
-    $("energyChart").innerHTML=noDailyMessage;
     $("savingsChart").innerHTML=noDailyMessage;
     return;
   }
@@ -220,30 +219,6 @@ function renderHistory(period=storicoPeriodo){
   const rows=getHistoryRows();
 
   createChart("productionChart",rows.map(row=>({label:row.label,value:row.produzione})),"chart-production","Produzione",formatKwh);
-
-  const energyContainer=$("energyChart");
-
-  if(rows.length){
-    const max=Math.max(...rows.map(item=>Math.max(item.consumo,item.immesso,item.prelevato)),0);
-
-    const makeBar=(value,className)=>`
-      <div class="energy-chart-item">
-        <span class="energy-chart-name">${className==="consumo"?"Consumo":className==="immesso"?"Immissione":"Prelievo"}</span>
-        <div class="chart-track"><div class="chart-bar ${className}" style="width:${max>0?Math.max(3,(value/max)*100):3}%"></div></div>
-        <strong>${formatKwh(value)}</strong>
-      </div>`;
-
-    energyContainer.innerHTML=rows.map(row=>`
-      <div class="chart-group">
-        <div class="chart-label chart-group-label">${row.label}</div>
-        ${makeBar(row.consumo,"consumo")}
-        ${makeBar(row.immesso,"immesso")}
-        ${makeBar(row.prelevato,"prelevato")}
-      </div>
-    `).join("");
-  }else{
-    energyContainer.innerHTML='<div class="chart-empty">Nessun dato storico disponibile</div>';
-  }
 
   const savingsRows=getSavingsRows();
 
