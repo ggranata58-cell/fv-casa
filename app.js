@@ -84,7 +84,9 @@ function setPage(page){
 }
 
 function isProvisionalMonth(row){
-  if(row?.stato==="provvisorio") return true;
+  if(row?.stato!==undefined && row?.stato!==null && String(row.stato).trim()!==""){
+    return String(row.stato).toLowerCase()==="provvisorio";
+  }
   const month=String(row?.mese||"").slice(0,7);
   return month==="2026-09" || month==="2026-10";
 }
@@ -355,7 +357,8 @@ function renderSavingsPage(){
   const trendContainer=$("savingsTrend");
   if(trend.length){
     const max=Math.max(...trend.map(row=>Number(row.risparmio_fv)||0),0);
-    trendContainer.innerHTML=trend.map(row=>{
+    const hasProvisional=trend.some(row=>isProvisionalMonth(row));
+    trendContainer.innerHTML=(hasProvisional?'<div class="provisional-note"><span></span> Valori provvisori in rosso, in attesa della fattura Nufri</div>':'')+trend.map(row=>{
       const value=Number(row.risparmio_fv)||0;
       const width=max>0?Math.max(3,(value/max)*100):3;
       const provisional=isProvisionalMonth(row)?" provisional":""; const cumulato=row.risparmio_fv_cumulato!==null && row.risparmio_fv_cumulato!==undefined ? ' <small class="chart-cumulative">Cumulato: '+formatEuro(row.risparmio_fv_cumulato)+'</small>' : ''; return '<div class="chart-row"><span class="chart-label">'+formatMonth(row.mese)+'</span><div class="chart-track"><div class="chart-bar savings'+provisional+'" style="width:'+width+'%"></div></div><strong class="chart-value">'+formatEuro(value)+cumulato+'</strong></div>';
@@ -488,9 +491,13 @@ async function loadData(){
     renderHistory(storicoPeriodo);
     renderSavingsPage();
     status.textContent="Dati aggiornati alle "+lastUpdateText;
+    const syncStatus=$("settingsSyncStatus");
+    if(syncStatus){syncStatus.textContent="Sincronizzazione riuscita";syncStatus.className="sync-state sync-ok";}
   }catch(error){
     console.error(error);
     status.textContent="Impossibile aggiornare i dati";
+    const syncStatus=$("settingsSyncStatus");
+    if(syncStatus){syncStatus.textContent="Sincronizzazione non riuscita";syncStatus.className="sync-state sync-error";}
   }
 }
 
