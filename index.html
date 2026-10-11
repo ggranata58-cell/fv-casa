@@ -32,14 +32,14 @@
 </section>
 <section id="pageRisparmio" class="app-page" hidden>
 <header class="page-header page-header-with-action"><div><h1>💰 Risparmio</h1><div class="page-subtitle">Quanto mi fa risparmiare il mio impianto</div></div><button class="refresh-button" type="button" onclick="loadData()" aria-label="Aggiorna dati" title="Aggiorna dati">↻</button></header>
-<section class="home-card savings-card"><div class="home-card-title">Risparmio</div><div class="savings-grid"><div class="saving-item"><div class="saving-name">Oggi</div><strong id="pageRisparmioOggi">—</strong></div><div class="saving-item"><div class="saving-name">Ultimo mese disponibile</div><strong id="pageRisparmioMese">—</strong></div><div class="saving-item"><div class="saving-name">Risparmio FV cumulato</div><strong id="pageRisparmioCumulato">—</strong></div><div class="saving-item"><div class="saving-name">Rate finanziamento</div><strong id="pageRisparmioRate">—</strong></div><div class="saving-item"><div class="saving-name">Risultato economico netto</div><strong id="pageRisparmioNetto">—</strong></div></div></section>
+<section class="home-card savings-card"><div class="home-card-title">Risparmio</div><div class="savings-grid"><div class="saving-item"><div class="saving-name">Oggi</div><strong id="pageRisparmioOggi">—</strong></div><div class="saving-item"><div class="saving-name">Ultimo mese disponibile</div><strong id="pageRisparmioMese">—</strong></div><div class="saving-item"><div class="saving-name">Risparmio FV cumulato</div><strong id="pageRisparmioCumulato">—</strong></div><div class="saving-item"><div class="saving-name">Rate finanziamento</div><strong id="pageRisparmioRate">—</strong></div><div class="saving-item saving-net-result"><div class="saving-name">Risultato economico netto</div><strong id="pageRisparmioNetto">—</strong></div></div></section>
 <section class="history-card savings-history"><div class="history-title">📈 Andamento del risparmio</div><div id="savingsTrend" class="chart-area"><div class="chart-empty">Nessun dato disponibile</div></div></section>
 <section class="history-card energy-history"><div class="history-title">🔎 Da dove nasce il risparmio</div><div id="savingsBreakdown" class="breakdown-list"><div class="chart-empty">Nessun dato disponibile</div></div></section>
 </section>
 <section id="pageImpostazioni" class="app-page" hidden>
 <header class="page-header"><h1>⚙️ Impostazioni</h1><div class="page-subtitle">Parametri e collegamenti dell'app</div></header>
 <section class="settings-card"><div class="settings-title">💶 Parametri economici</div><div class="settings-help">I valori hanno una data di decorrenza. Le variazioni precedenti vengono conservate per mantenere corretti i dati storici.</div><div id="economicSettings" class="settings-list"></div><button id="settingsReset" class="settings-secondary" type="button">Ripristina valori iniziali</button></section>
-<section class="settings-card"><div class="settings-title">🔄 Dati e sincronizzazione</div><div class="settings-list"><div class="settings-row"><span>Ultimo aggiornamento dati</span><strong id="settingsLastUpdate">—</strong></div><button id="settingsSync" class="settings-action" type="button">Sincronizza dati</button></div></section>
+<section class="settings-card"><div class="settings-title">🔄 Dati e sincronizzazione</div><div class="settings-list"><div class="settings-row"><span>Ultimo aggiornamento dati</span><strong id="settingsLastUpdate">—</strong></div><div class="settings-row"><span>Stato sincronizzazione</span><strong id="settingsSyncStatus" class="sync-state">In attesa del primo aggiornamento</strong></div><button id="settingsSync" class="settings-action" type="button">Sincronizza dati</button></div></section>
 <section class="settings-card"><div class="settings-title">ℹ️ Informazioni app</div><div class="settings-list"><div class="settings-row"><span>Nome</span><strong>FV Casa</strong></div><div class="settings-row"><span>Versione</span><strong>1.0</strong></div><div class="settings-row"><span>Ultimo aggiornamento</span><strong>03/10/2026</strong></div></div></section>
 </section>
 <div id="status" class="status">Connessione in corso…</div>
@@ -50,6 +50,6 @@
 <button class="nav-item" type="button" data-page="Impostazioni" aria-label="Impostazioni" onclick="showPage('Impostazioni')"><span>⚙️</span><small>Impostazioni</small></button>
 </nav>
 </main>
-<script>function showPage(page){setPage(page);}</script><script src="app.js?v=24"></script>
+<script>function showPage(page){setPage(page);}</script><script src="app.js?v=25"></script>
 </body>
 </html>
