@@ -1,4 +1,4 @@
-const CACHE_NAME="fv-casa-v34";
+const CACHE_NAME="fv-casa-v35";
 const APP_SHELL=["./","./index.html","./style.css","./app.js","./manifest.json"];
 
 self.addEventListener("install",event=>{
