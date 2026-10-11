@@ -562,3 +562,39 @@ footer strong{
 .today-line.production{stroke:#2e9b57}
 .today-line.consumption{stroke:#d9b93f}
 .today-line.import{stroke:#d94b4b}
+
+
+/* Migliorie: chiarezza del risultato netto e dello stato dei dati */
+.saving-net-result{
+  grid-column:1 / -1;
+  padding:12px 10px;
+  border-radius:14px;
+  background:rgba(255,255,255,.72);
+}
+.saving-net-result .saving-name{
+  margin-bottom:5px;
+  color:#374151;
+  font-weight:650;
+}
+.saving-net-result strong{
+  font-size:23px;
+}
+.provisional-note{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  margin:0 0 4px;
+  color:#9f3030;
+  font-size:11px;
+  line-height:1.35;
+}
+.provisional-note span{
+  flex:0 0 8px;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#d94b4b;
+}
+.sync-state{white-space:normal!important;max-width:150px}
+.sync-state.sync-ok{color:#2f6f3d}
+.sync-state.sync-error{color:#b42318}
