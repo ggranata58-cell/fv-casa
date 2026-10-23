@@ -598,3 +598,17 @@ footer strong{
 .sync-state{white-space:normal!important;max-width:150px}
 .sync-state.sync-ok{color:#2f6f3d}
 .sync-state.sync-error{color:#b42318}
+
+/* Anteprima fattura Nufri: non esegue scritture */
+.bottom-nav{grid-template-columns:repeat(5,minmax(0,1fr))}
+.invoice-form{display:flex;flex-direction:column;gap:8px}
+.invoice-form label{margin-top:6px;color:#59616c;font-size:12px;font-weight:600}
+.invoice-form input{width:100%;min-height:42px;padding:10px 12px;border:1px solid #cbd1d8;border-radius:11px;background:#fff;color:#1f2937;font:inherit;font-size:14px}
+.invoice-form input:focus{outline:2px solid #83b894;outline-offset:1px}
+.invoice-preview{margin-top:16px;padding:12px;border-radius:13px;background:#f5f6f7}
+.invoice-result-heading{margin-bottom:8px;font-size:13px;font-weight:750}
+.invoice-savings-row{display:flex;justify-content:space-between;gap:8px;margin-top:10px;padding-top:12px;border-top:1px solid #d7dce1;font-size:12px;font-weight:700}
+.invoice-savings-row strong{text-align:right;white-space:nowrap}
+.invoice-safety-note{margin-top:12px;color:#7b5560;font-size:10px;line-height:1.4}
+.invoice-error{color:#b42318;font-size:12px;line-height:1.4}
+@media(max-width:340px){.nav-item small{font-size:10px}.nav-item span{font-size:16px}.nav-item{padding-left:0;padding-right:0}}
