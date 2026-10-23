@@ -434,15 +434,15 @@ const INVOICE_SESSION_KEY="fv-casa-nufri-auth-v1";
 let invoicePreviewPayload=null;
 
 function readInvoiceSession(){
-  try { return JSON.parse(sessionStorage.getItem(INVOICE_SESSION_KEY)||"null"); }
+  try { return JSON.parse(localStorage.getItem(INVOICE_SESSION_KEY)||"null"); }
   catch { return null; }
 }
 function writeInvoiceSession(session){
-  sessionStorage.setItem(INVOICE_SESSION_KEY,JSON.stringify(session));
+  localStorage.setItem(INVOICE_SESSION_KEY,JSON.stringify(session));
   renderInvoiceAuth();
 }
 function clearInvoiceSession(){
-  sessionStorage.removeItem(INVOICE_SESSION_KEY);
+  localStorage.removeItem(INVOICE_SESSION_KEY);
   renderInvoiceAuth();
 }
 async function invoiceAuthRequest(path,body){
