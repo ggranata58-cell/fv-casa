@@ -88,7 +88,7 @@ function isProvisionalMonth(row){
     return String(row.stato).toLowerCase()==="provvisorio";
   }
   const month=String(row?.mese||"").slice(0,7);
-  return month==="2026-09" || month==="2026-10";
+  return month==="2026-10";
 }
 
 function createChart(containerId,rows,series,titleSuffix,formatter=formatNumber){
