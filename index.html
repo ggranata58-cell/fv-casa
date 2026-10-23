@@ -36,6 +36,38 @@
 <section class="history-card savings-history"><div class="history-title">📈 Andamento del risparmio</div><div id="savingsTrend" class="chart-area"><div class="chart-empty">Nessun dato disponibile</div></div></section>
 <section class="history-card energy-history"><div class="history-title">🔎 Da dove nasce il risparmio</div><div id="savingsBreakdown" class="breakdown-list"><div class="chart-empty">Nessun dato disponibile</div></div></section>
 </section>
+<section id="pageFattura" class="app-page" hidden>
+<header class="page-header"><h1>🧾 Fattura Nufri</h1><div class="page-subtitle">Inserimento degli importi effettivi IVA inclusa</div></header>
+<section class="settings-card invoice-card">
+<div class="settings-title">Fattura Nufri</div>
+<p class="settings-help">Accedi con il tuo account Supabase. Il server verifica l’identità prima di registrare gli importi e aggiornare il risparmio del mese.</p>
+<div class="invoice-auth">
+<div id="invoiceAuthStatus" class="settings-help" aria-live="polite">Accesso non effettuato.</div>
+<form id="invoiceLoginForm" class="invoice-form">
+<label for="invoiceEmail">Email Supabase</label>
+<input id="invoiceEmail" name="invoiceEmail" type="email" autocomplete="username" required>
+<label for="invoicePassword">Password Supabase</label>
+<input id="invoicePassword" name="invoicePassword" type="password" autocomplete="current-password" required>
+<button id="invoiceLoginButton" class="settings-action" type="submit">Accedi</button>
+</form>
+<button id="invoiceLogout" class="settings-secondary" type="button" hidden>Esci dall’account</button>
+</div>
+<div class="settings-title">Anteprima e salvataggio</div>
+<form id="invoicePreviewForm" class="invoice-form">
+<label for="invoiceMonth">Mese della fattura</label>
+<input id="invoiceMonth" name="invoiceMonth" type="month" required>
+<label for="invoiceWithoutPv">Costo senza fotovoltaico (IVA inclusa, €)</label>
+<input id="invoiceWithoutPv" name="invoiceWithoutPv" type="number" min="0" max="100000" step="0.01" inputmode="decimal" placeholder="es. 63,27" required>
+<label for="invoiceWithPv">Costo con fotovoltaico (IVA inclusa, €)</label>
+<input id="invoiceWithPv" name="invoiceWithPv" type="number" min="0" max="100000" step="0.01" inputmode="decimal" placeholder="es. 19,52" required>
+<button class="settings-action" type="submit">Calcola anteprima</button>
+</form>
+<div id="invoicePreviewResult" class="invoice-preview" aria-live="polite"><div class="chart-empty">Inserisci il mese e i due importi per controllare il risparmio.</div></div>
+<button id="invoiceSaveButton" class="settings-action" type="button" disabled>Salva fattura e aggiorna il risparmio</button>
+<div id="invoiceSaveResult" class="settings-help" aria-live="polite"></div>
+<div class="invoice-safety-note">Il salvataggio è consentito solo dopo l’autenticazione e la verifica dell’utente sul server.</div>
+</section>
+</section>
 <section id="pageImpostazioni" class="app-page" hidden>
 <header class="page-header"><h1>⚙️ Impostazioni</h1><div class="page-subtitle">Parametri e collegamenti dell'app</div></header>
 <section class="settings-card"><div class="settings-title">💶 Parametri economici</div><div class="settings-help">I valori hanno una data di decorrenza. Le variazioni precedenti vengono conservate per mantenere corretti i dati storici.</div><div id="economicSettings" class="settings-list"></div><button id="settingsReset" class="settings-secondary" type="button">Ripristina valori iniziali</button></section>
@@ -47,9 +79,10 @@
 <button class="nav-item active" type="button" data-page="Oggi" aria-label="Oggi" onclick="showPage('Oggi')"><span>🏠</span><small>Oggi</small></button>
 <button class="nav-item" type="button" data-page="Risparmio" aria-label="Risparmio" onclick="showPage('Risparmio')"><span>💰</span><small>Risparmio</small></button>
 <button class="nav-item" type="button" data-page="Storico" aria-label="Storico" onclick="showPage('Storico')"><span>📊</span><small>Storico</small></button>
+<button class="nav-item" type="button" data-page="Fattura" aria-label="Fattura Nufri" onclick="showPage('Fattura')"><span>🧾</span><small>Fattura</small></button>
 <button class="nav-item" type="button" data-page="Impostazioni" aria-label="Impostazioni" onclick="showPage('Impostazioni')"><span>⚙️</span><small>Impostazioni</small></button>
 </nav>
 </main>
-<script>function showPage(page){setPage(page);}</script><script src="app.js?v=27"></script>
+<script>function showPage(page){setPage(page);}</script><script src="app.js?v=29"></script>
 </body>
 </html>

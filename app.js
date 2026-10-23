@@ -71,10 +71,12 @@ function setPage(page){
   const storico=page==="Storico";
   const risparmio=page==="Risparmio";
   const impostazioni=page==="Impostazioni";
+  const fattura=page==="Fattura";
   $("pageOggi").hidden=!oggi;
   $("pageStorico").hidden=!storico;
   $("pageRisparmio").hidden=!risparmio;
   $("pageImpostazioni").hidden=!impostazioni;
+  $("pageFattura").hidden=!fattura;
   document.querySelectorAll(".nav-item").forEach(button=>{
     button.classList.toggle("active",button.dataset.page===page);
   });
@@ -425,12 +427,143 @@ function renderMonthly(data){}
 function renderNufri(data){}
 function renderSavings(data){}
 
+
+const SUPABASE_AUTH_URL="https://bstcydrgyspgofckzybl.supabase.co/auth/v1";
+const NUFri_SAVE_URL="https://bstcydrgyspgofckzybl.supabase.co/functions/v1/nufri-fattura";
+const INVOICE_SESSION_KEY="fv-casa-nufri-auth-v1";
+let invoicePreviewPayload=null;
+
+function readInvoiceSession(){
+  try { return JSON.parse(sessionStorage.getItem(INVOICE_SESSION_KEY)||"null"); }
+  catch { return null; }
+}
+function writeInvoiceSession(session){
+  sessionStorage.setItem(INVOICE_SESSION_KEY,JSON.stringify(session));
+  renderInvoiceAuth();
+}
+function clearInvoiceSession(){
+  sessionStorage.removeItem(INVOICE_SESSION_KEY);
+  renderInvoiceAuth();
+}
+async function invoiceAuthRequest(path,body){
+  const response=await fetch(SUPABASE_AUTH_URL+path,{
+    method:"POST",
+    headers:{"Content-Type":"application/json","apikey":SUPABASE_PUBLISHABLE_KEY},
+    body:JSON.stringify(body),
+    cache:"no-store"
+  });
+  const result=await response.json().catch(()=>({}));
+  if(!response.ok) throw new Error(result.msg||result.message||result.error_description||result.error||"Autenticazione non riuscita");
+  return result;
+}
+async function getInvoiceAccessToken(){
+  let session=readInvoiceSession();
+  if(!session?.access_token) throw new Error("Accedi con email e password prima di salvare.");
+  if(Number(session.expires_at||0)<Math.floor(Date.now()/1000)+60){
+    if(!session.refresh_token) { clearInvoiceSession(); throw new Error("Sessione scaduta: accedi di nuovo."); }
+    try{
+      const refreshed=await invoiceAuthRequest("/token?grant_type=refresh_token",{refresh_token:session.refresh_token});
+      session={...refreshed,expires_at:Math.floor(Date.now()/1000)+Number(refreshed.expires_in||3600)};
+      writeInvoiceSession(session);
+    }catch(error){clearInvoiceSession();throw new Error("Sessione scaduta: accedi di nuovo.");}
+  }
+  return session.access_token;
+}
+function renderInvoiceAuth(){
+  const session=readInvoiceSession();
+  const status=$("invoiceAuthStatus");
+  const login=$("invoiceLoginForm");
+  const logout=$("invoiceLogout");
+  const save=$("invoiceSaveButton");
+  if(status) status.textContent=session?.access_token ? "Sessione presente. L’utente viene verificato prima del salvataggio." : "Accedi con l’email e la password del tuo account Supabase.";
+  if(login) login.hidden=!!session?.access_token;
+  if(logout) logout.hidden=!session?.access_token;
+  if(save) save.disabled=!session?.access_token||!invoicePreviewPayload;
+}
+function setupInvoiceAuth(){
+  const login=$("invoiceLoginForm");
+  if(login) login.addEventListener("submit",async event=>{
+    event.preventDefault();
+    const button=$("invoiceLoginButton"), status=$("invoiceAuthStatus");
+    button.disabled=true; status.textContent="Accesso in corso…";
+    try{
+      const session=await invoiceAuthRequest("/token?grant_type=password",{
+        email:$("invoiceEmail").value.trim(),
+        password:$("invoicePassword").value
+      });
+      session.expires_at=Math.floor(Date.now()/1000)+Number(session.expires_in||3600);
+      writeInvoiceSession(session);
+      $("invoicePassword").value="";
+      status.textContent="Accesso riuscito.";
+    }catch(error){status.textContent="Accesso non riuscito: "+error.message;}
+    finally{button.disabled=false;renderInvoiceAuth();}
+  });
+  $("invoiceLogout")?.addEventListener("click",()=>{clearInvoiceSession();});
+  $("invoiceSaveButton")?.addEventListener("click",saveInvoice);
+  renderInvoiceAuth();
+}
+async function saveInvoice(){
+  const button=$("invoiceSaveButton"), output=$("invoiceSaveResult");
+  if(!invoicePreviewPayload){output.textContent="Prima calcola l’anteprima.";return;}
+  button.disabled=true; output.textContent="Salvataggio in corso…";
+  try{
+    const accessToken=await getInvoiceAccessToken();
+    const response=await fetch(NUFri_SAVE_URL,{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json",
+        "apikey":SUPABASE_PUBLISHABLE_KEY,
+        "Authorization":"Bearer "+accessToken
+      },
+      body:JSON.stringify(invoicePreviewPayload),
+      cache:"no-store"
+    });
+    const result=await response.json().catch(()=>({}));
+    if(!response.ok||!result.ok) throw new Error(result.error||"HTTP "+response.status);
+    output.textContent="Fattura salvata per "+formatMonth(result.mese.slice(0,7))+". Risparmio FV definitivo: "+formatEuro(result.risparmio_fv)+".";
+    await loadData();
+  }catch(error){
+    output.textContent="Salvataggio non riuscito: "+error.message;
+  }finally{renderInvoiceAuth();}
+}
+
+function previewInvoice(){
+  const form=$("invoicePreviewForm");
+  const output=$("invoicePreviewResult");
+  if(!form||!output)return;
+  form.addEventListener("submit",event=>{
+    event.preventDefault();
+    const month=$("invoiceMonth").value;
+    const withoutValue=$("invoiceWithoutPv").value;
+    const withValue=$("invoiceWithPv").value;
+    const without=Number(withoutValue);
+    const withPv=Number(withValue);
+    if(!/^\d{4}-(0[1-9]|1[0-2])$/.test(month)||withoutValue.trim()===""||withValue.trim()===""||
+       !Number.isFinite(without)||!Number.isFinite(withPv)||without<0||withPv<0||without>100000||withPv>100000||
+       Math.abs(Math.round(without*100)-without*100)>1e-7||Math.abs(Math.round(withPv*100)-withPv*100)>1e-7){
+      output.innerHTML='<div class="invoice-error">Controlla il mese e inserisci due importi non negativi, con massimo due decimali.</div>';
+      return;
+    }
+    const savings=Math.round((without-withPv)*100)/100;
+    invoicePreviewPayload={month,costWithoutPv:Math.round(without*100)/100,costWithPv:Math.round(withPv*100)/100};
+    const monthDate=month+"-01";
+    const displayMonth=new Date(monthDate+"T12:00:00").toLocaleDateString("it-IT",{month:"long",year:"numeric"});
+    output.innerHTML='<div class="invoice-result-heading">Controlla i dati</div>'+
+      '<div class="settings-row"><span>Mese</span><strong>'+displayMonth+'</strong></div>'+
+      '<div class="settings-row"><span>Costo senza FV</span><strong>'+formatEuro(without)+'</strong></div>'+
+      '<div class="settings-row"><span>Costo con FV</span><strong>'+formatEuro(withPv)+'</strong></div>'+
+      '<div class="invoice-savings-row"><span>Risparmio FV calcolato</span><strong>'+formatEuro(savings)+'</strong></div>'+
+      '<div class="invoice-safety-note">Anteprima calcolata. Per registrarla e rendere definitivo il mese, usa Salva fattura.</div>';
+    const saveButton=$("invoiceSaveButton"); if(saveButton)saveButton.disabled=!readInvoiceSession();
+  });
+}
+
 function setupNavigation(){
   document.querySelectorAll(".nav-item").forEach(button=>{
     button.addEventListener("click",event=>{
       event.preventDefault();
       const page=button.getAttribute("data-page");
-      if(page==="Oggi"||page==="Storico"||page==="Risparmio"||page==="Impostazioni") setPage(page);
+      if(page==="Oggi"||page==="Storico"||page==="Risparmio"||page==="Impostazioni"||page==="Fattura") setPage(page);
     });
   });
 
@@ -441,6 +574,8 @@ function setupNavigation(){
 
 setTodayDate();
 setupNavigation();
+previewInvoice();
+setupInvoiceAuth();
 $("settingsSync")?.addEventListener("click",()=>loadData());
 $("settingsReset")?.addEventListener("click",()=>{if(confirm("Ripristinare i parametri iniziali dello storico?")){economicParameters=cloneEconomicParameters();saveEconomicParameters();renderSettings();renderSavingsPage();}});
 
