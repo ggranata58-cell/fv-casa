@@ -71,10 +71,12 @@ function setPage(page){
   const storico=page==="Storico";
   const risparmio=page==="Risparmio";
   const impostazioni=page==="Impostazioni";
+  const fattura=page==="Fattura";
   $("pageOggi").hidden=!oggi;
   $("pageStorico").hidden=!storico;
   $("pageRisparmio").hidden=!risparmio;
   $("pageImpostazioni").hidden=!impostazioni;
+  $("pageFattura").hidden=!fattura;
   document.querySelectorAll(".nav-item").forEach(button=>{
     button.classList.toggle("active",button.dataset.page===page);
   });
@@ -425,12 +427,42 @@ function renderMonthly(data){}
 function renderNufri(data){}
 function renderSavings(data){}
 
+
+function previewInvoice(){
+  const form=$("invoicePreviewForm");
+  const output=$("invoicePreviewResult");
+  if(!form||!output)return;
+  form.addEventListener("submit",event=>{
+    event.preventDefault();
+    const month=$("invoiceMonth").value;
+    const withoutValue=$("invoiceWithoutPv").value;
+    const withValue=$("invoiceWithPv").value;
+    const without=Number(withoutValue);
+    const withPv=Number(withValue);
+    if(!/^\\d{4}-(0[1-9]|1[0-2])$/.test(month)||withoutValue.trim()===""||withValue.trim()===""||
+       !Number.isFinite(without)||!Number.isFinite(withPv)||without<0||withPv<0||without>100000||withPv>100000||
+       Math.round(without*100)!==without*100||Math.round(withPv*100)!==withPv*100){
+      output.innerHTML='<div class="invoice-error">Controlla il mese e inserisci due importi non negativi, con massimo due decimali.</div>';
+      return;
+    }
+    const savings=Math.round((without-withPv)*100)/100;
+    const monthDate=month+"-01";
+    const displayMonth=new Date(monthDate+"T12:00:00").toLocaleDateString("it-IT",{month:"long",year:"numeric"});
+    output.innerHTML='<div class="invoice-result-heading">Controlla i dati</div>'+
+      '<div class="settings-row"><span>Mese</span><strong>'+displayMonth+'</strong></div>'+
+      '<div class="settings-row"><span>Costo senza FV</span><strong>'+formatEuro(without)+'</strong></div>'+
+      '<div class="settings-row"><span>Costo con FV</span><strong>'+formatEuro(withPv)+'</strong></div>'+
+      '<div class="invoice-savings-row"><span>Risparmio FV calcolato</span><strong>'+formatEuro(savings)+'</strong></div>'+
+      '<div class="invoice-safety-note">Anteprima non salvata. Il risultato non aggiorna il risparmio cumulato.</div>';
+  });
+}
+
 function setupNavigation(){
   document.querySelectorAll(".nav-item").forEach(button=>{
     button.addEventListener("click",event=>{
       event.preventDefault();
       const page=button.getAttribute("data-page");
-      if(page==="Oggi"||page==="Storico"||page==="Risparmio"||page==="Impostazioni") setPage(page);
+      if(page==="Oggi"||page==="Storico"||page==="Risparmio"||page==="Impostazioni"||page==="Fattura") setPage(page);
     });
   });
 
@@ -441,6 +473,7 @@ function setupNavigation(){
 
 setTodayDate();
 setupNavigation();
+previewInvoice();
 $("settingsSync")?.addEventListener("click",()=>loadData());
 $("settingsReset")?.addEventListener("click",()=>{if(confirm("Ripristinare i parametri iniziali dello storico?")){economicParameters=cloneEconomicParameters();saveEconomicParameters();renderSettings();renderSavingsPage();}});
 
