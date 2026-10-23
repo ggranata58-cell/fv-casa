@@ -439,9 +439,9 @@ function previewInvoice(){
     const withValue=$("invoiceWithPv").value;
     const without=Number(withoutValue);
     const withPv=Number(withValue);
-    if(!/^\\d{4}-(0[1-9]|1[0-2])$/.test(month)||withoutValue.trim()===""||withValue.trim()===""||
+    if(!/^\d{4}-(0[1-9]|1[0-2])$/.test(month)||withoutValue.trim()===""||withValue.trim()===""||
        !Number.isFinite(without)||!Number.isFinite(withPv)||without<0||withPv<0||without>100000||withPv>100000||
-       Math.round(without*100)!==without*100||Math.round(withPv*100)!==withPv*100){
+       Math.abs(Math.round(without*100)-without*100)>1e-7||Math.abs(Math.round(withPv*100)-withPv*100)>1e-7){
       output.innerHTML='<div class="invoice-error">Controlla il mese e inserisci due importi non negativi, con massimo due decimali.</div>';
       return;
     }
