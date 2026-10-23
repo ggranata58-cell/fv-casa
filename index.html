@@ -39,8 +39,20 @@
 <section id="pageFattura" class="app-page" hidden>
 <header class="page-header"><h1>🧾 Fattura Nufri</h1><div class="page-subtitle">Inserimento degli importi effettivi IVA inclusa</div></header>
 <section class="settings-card invoice-card">
-<div class="settings-title">Anteprima della fattura</div>
-<p class="settings-help">Questa schermata serve per controllare i valori e il calcolo. In questa fase non salva nulla nel database e non rende definitivo alcun mese.</p>
+<div class="settings-title">Fattura Nufri</div>
+<p class="settings-help">Accedi con il tuo account Supabase. Il server verifica l’identità prima di registrare gli importi e aggiornare il risparmio del mese.</p>
+<div class="invoice-auth">
+<div id="invoiceAuthStatus" class="settings-help" aria-live="polite">Accesso non effettuato.</div>
+<form id="invoiceLoginForm" class="invoice-form">
+<label for="invoiceEmail">Email Supabase</label>
+<input id="invoiceEmail" name="invoiceEmail" type="email" autocomplete="username" required>
+<label for="invoicePassword">Password Supabase</label>
+<input id="invoicePassword" name="invoicePassword" type="password" autocomplete="current-password" required>
+<button id="invoiceLoginButton" class="settings-action" type="submit">Accedi</button>
+</form>
+<button id="invoiceLogout" class="settings-secondary" type="button" hidden>Esci dall’account</button>
+</div>
+<div class="settings-title">Anteprima e salvataggio</div>
 <form id="invoicePreviewForm" class="invoice-form">
 <label for="invoiceMonth">Mese della fattura</label>
 <input id="invoiceMonth" name="invoiceMonth" type="month" required>
@@ -51,7 +63,9 @@
 <button class="settings-action" type="submit">Calcola anteprima</button>
 </form>
 <div id="invoicePreviewResult" class="invoice-preview" aria-live="polite"><div class="chart-empty">Inserisci il mese e i due importi per controllare il risparmio.</div></div>
-<div class="invoice-safety-note">Stato: solo anteprima · nessuna scrittura · nessuna modifica ai dati salvati</div>
+<button id="invoiceSaveButton" class="settings-action" type="button" disabled>Salva fattura e aggiorna il risparmio</button>
+<div id="invoiceSaveResult" class="settings-help" aria-live="polite"></div>
+<div class="invoice-safety-note">Il salvataggio è consentito solo dopo l’autenticazione e la verifica dell’utente sul server.</div>
 </section>
 </section>
 <section id="pageImpostazioni" class="app-page" hidden>
@@ -69,6 +83,6 @@
 <button class="nav-item" type="button" data-page="Impostazioni" aria-label="Impostazioni" onclick="showPage('Impostazioni')"><span>⚙️</span><small>Impostazioni</small></button>
 </nav>
 </main>
-<script>function showPage(page){setPage(page);}</script><script src="app.js?v=28"></script>
+<script>function showPage(page){setPage(page);}</script><script src="app.js?v=29"></script>
 </body>
 </html>
