@@ -612,3 +612,6 @@ footer strong{
 .invoice-safety-note{margin-top:12px;color:#7b5560;font-size:10px;line-height:1.4}
 .invoice-error{color:#b42318;font-size:12px;line-height:1.4}
 @media(max-width:340px){.nav-item small{font-size:10px}.nav-item span{font-size:16px}.nav-item{padding-left:0;padding-right:0}}
+
+/* Nasconde i controlli di autenticazione quando lo stato li disattiva. */
+.invoice-form[hidden], #invoiceLogout[hidden] { display: none !important; }
