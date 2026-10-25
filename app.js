@@ -40,6 +40,12 @@ function formatKwh(value){
   return Number.isFinite(Number(value)) ? formatNumber(value,1)+" kWh" : "—";
 }
 
+function formatKw(value){
+  if(value===null||value===undefined||value==="") return "—";
+  const n=Number(value);
+  return Number.isFinite(n) ? formatNumber(n,3)+" kW" : "—";
+}
+
 function formatEuro(value){
   return Number.isFinite(Number(value))
     ? Number(value).toLocaleString("it-IT",{minimumFractionDigits:2,maximumFractionDigits:2})+" €"
@@ -599,6 +605,7 @@ async function loadData(){
     const d=result.dati;
 
     $("produzioneKwh").textContent=formatKwh(d.produzione_fv_kwh).replace(" kWh","");
+    $("energiaProduzioneKw").textContent=formatKw(d.produzione_fv_kw);
     $("consumoKwh").textContent=formatKwh(d.consumo_casa_kwh);
     $("immessoKwh").textContent=formatKwh(d.immesso_rete_kwh);
     $("prelevatoKwh").textContent=formatKwh(d.prelevato_rete_kwh);
